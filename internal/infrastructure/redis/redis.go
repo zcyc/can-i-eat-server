@@ -19,6 +19,7 @@ func Init() {
 	password := configMap["password"]
 	db, _ := strconv.Atoi(configMap["database"])
 	addr := fmt.Sprintf("%s:%s", host, port)
+
 	// 连接 redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     addr,
@@ -26,6 +27,7 @@ func Init() {
 		DB:       db,       // use default DB
 	})
 
+	// 测试连接
 	_, err := rdb.Ping(ctx).Result()
 	if err != nil {
 		panic(err)
