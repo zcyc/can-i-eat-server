@@ -1,11 +1,9 @@
-package food_repo
+package tag_repo
 
-import (
-	"time"
-)
+import "time"
 
-// FoodDao [...]
-type FoodDao struct {
+// TagDao [...]
+type TagDao struct {
 	Active     int8      `gorm:"column:active" json:"active"`          // 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
 	Flag       int8      `gorm:"column:flag" json:"flag"`              // 是否删除 1 删除 0 未删除
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"` // 记录写入时间
@@ -17,12 +15,12 @@ type FoodDao struct {
 }
 
 // TableName get sql table name.获取数据库表名
-func (m *FoodDao) TableName() string {
-	return "food"
+func (m *TagDao) TableName() string {
+	return "tag"
 }
 
-// FoodColumns get sql column name.获取数据库列名
-var FoodColumns = struct {
+// TagColumns get sql column name.获取数据库列名
+var TagColumns = struct {
 	Active     string
 	Flag       string
 	CreateTime string

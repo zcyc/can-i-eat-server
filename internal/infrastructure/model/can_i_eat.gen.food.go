@@ -1,7 +1,7 @@
 package model
 
 import (
-	"can-i-eat/internal/repo/food"
+	food_repo "can-i-eat/internal/repo/food"
 	"context"
 	"fmt"
 	"gorm.io/gorm"
@@ -83,6 +83,16 @@ func (obj *_FoodMgr) WithID(id uint64) Option {
 // WithName name获取 名称
 func (obj *_FoodMgr) WithName(name string) Option {
 	return optionFunc(func(o *options) { o.query["name"] = name })
+}
+
+// WithAlias alias获取 别名
+func (obj *_FoodMgr) WithAlias(alias string) Option {
+	return optionFunc(func(o *options) { o.query["alias"] = alias })
+}
+
+// WithCategory category获取 分类
+func (obj *_FoodMgr) WithCategory(category string) Option {
+	return optionFunc(func(o *options) { o.query["category"] = category })
 }
 
 // GetByOption 功能选项模式获取
@@ -218,6 +228,34 @@ func (obj *_FoodMgr) GetFromName(name string) (results []*food_repo.FoodDao, err
 // GetBatchFromName 批量查找 名称
 func (obj *_FoodMgr) GetBatchFromName(names []string) (results []*food_repo.FoodDao, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`name` IN (?)", names).Find(&results).Error
+
+	return
+}
+
+// GetFromAlias 通过alias获取内容 别名
+func (obj *_FoodMgr) GetFromAlias(alias string) (results []*food_repo.FoodDao, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`alias` = ?", alias).Find(&results).Error
+
+	return
+}
+
+// GetBatchFromAlias 批量查找 别名
+func (obj *_FoodMgr) GetBatchFromAlias(aliass []string) (results []*food_repo.FoodDao, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`alias` IN (?)", aliass).Find(&results).Error
+
+	return
+}
+
+// GetFromCategory 通过category获取内容 分类
+func (obj *_FoodMgr) GetFromCategory(category string) (results []*food_repo.FoodDao, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`category` = ?", category).Find(&results).Error
+
+	return
+}
+
+// GetBatchFromCategory 批量查找 分类
+func (obj *_FoodMgr) GetBatchFromCategory(categorys []string) (results []*food_repo.FoodDao, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`category` IN (?)", categorys).Find(&results).Error
 
 	return
 }

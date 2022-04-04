@@ -41,7 +41,9 @@ func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, er
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	foodPage := model.NewPage(size, page)
 	result, err := foodMgr.SelectPage(foodPage, foodMgr.WithFlag(constant.Normal), foodMgr.WithActive(constant.Activated))
-
+	if err != nil {
+		return nil, err
+	}
 	foodList := make([]*food_domain.Food, 0)
 	for _, foodRepo := range result.GetRecords().([]food_repo.FoodDao) {
 		food := new(food_domain.Food)
@@ -53,7 +55,7 @@ func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, er
 	resp.Size = int(result.GetSize())
 	resp.Total = int(result.GetTotal())
 
-	return resp, err
+	return resp, nil
 }
 
 func (f foodImpl) FoodDetail(id int64) (*food_domain.Food, error) {
