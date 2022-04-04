@@ -27,9 +27,8 @@ func main() {
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
-// 初始化 facade
+// initFacade 初始化路由
 func initFacade(e *echo.Echo) {
-	// 所有 facade 都在这里注册
 	food_facade.RegisterHandlers(e)
 	tag_facade.RegisterHandlers(e)
 	food_tag_facade.RegisterHandlers(e)
@@ -39,8 +38,8 @@ func initFacade(e *echo.Echo) {
 	category_facade.RegisterHandlers(e)
 }
 
+// initInfrastructure 初始化基础设施
 func initInfrastructure() {
-	// 所有基础设施都在这里注册
 	mysql_infrastructure.Init()
 	redis_infrastructure.Init()
 }
