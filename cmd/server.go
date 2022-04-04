@@ -9,6 +9,7 @@ import (
 	group_facade "can-i-eat/internal/facade/handler/group"
 	tag_facade "can-i-eat/internal/facade/handler/tag"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
+	redis_infrastructure "can-i-eat/internal/infrastructure/redis"
 	"github.com/labstack/echo/v4"
 )
 
@@ -41,4 +42,5 @@ func initFacade(e *echo.Echo) {
 func initInfrastructure() {
 	// 所有基础设施都在这里注册
 	mysql_infrastructure.Init()
+	redis_infrastructure.Init()
 }
