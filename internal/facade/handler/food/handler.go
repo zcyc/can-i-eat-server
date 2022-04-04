@@ -1,7 +1,7 @@
 package food_facade
 
 import (
-	"can-i-eat/common/util"
+	string2 "can-i-eat/common/util/string"
 	food_domain "can-i-eat/internal/domain/food"
 	food_service "can-i-eat/internal/service/food"
 	"github.com/labstack/echo/v4"
@@ -12,11 +12,11 @@ func handlerUserList(c echo.Context) error {
 	sizeStr := c.QueryParam("page")
 	pageStr := c.QueryParam("size")
 
-	size, err := util.StringToInt64(sizeStr)
+	size, err := string2.StringToInt64(sizeStr)
 	if err != nil {
 		return err
 	}
-	page, err := util.StringToInt64(pageStr)
+	page, err := string2.StringToInt64(pageStr)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func handlerUserList(c echo.Context) error {
 
 func handlerUserDetail(c echo.Context) error {
 	idStr := c.QueryParam("id")
-	id, err := util.StringToInt64(idStr)
+	id, err := string2.StringToInt64(idStr)
 	if err != nil {
 		return err
 	}

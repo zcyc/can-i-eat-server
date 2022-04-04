@@ -1,7 +1,7 @@
 package main
 
 import (
-	user_facade "can-i-eat/internal/facade/handler/user"
+	food_facade "can-i-eat/internal/facade/handler/food"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/labstack/echo/v4"
 )
@@ -23,7 +23,7 @@ func main() {
 // 初始化 facade
 func initFacade(e *echo.Echo) {
 	// 所有 facade 都在这里注册
-	user_facade.RegisterHandlers(e)
+	food_facade.RegisterHandlers(e)
 }
 
 func initInfrastructure() {

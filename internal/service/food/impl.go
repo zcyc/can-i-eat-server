@@ -2,6 +2,7 @@ package food_service
 
 import (
 	"can-i-eat/common/constant"
+	id_util "can-i-eat/common/util/id"
 	food_domain "can-i-eat/internal/domain/food"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
@@ -68,11 +69,14 @@ func (f foodImpl) FoodDetail(id int64) (*food_domain.Food, error) {
 }
 
 func (f foodImpl) Create(food *food_domain.Food) (uint64, error) {
+	foodDao := new(food_repo.FoodDao)
+	_ = copier.Copy(foodDao, food)
+	foodDao.ID, _ = id_util.NextID()
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
-	err := foodMgr.Omit("create_time", "update_time").Create(food).Error
+	err := foodMgr.Omit("create_time", "update_time").Create(foodDao).Error
 	if err != nil {
 		return 0, err
 	}
-	log.Infof("create food success: %d", food.ID)
-	return food.ID, nil
+	log.Infof("create food success: %d", foodDao.ID)
+	return foodDao.ID, nil
 }

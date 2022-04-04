@@ -1,4 +1,4 @@
-package util
+package string_util
 
 import "strconv"
 
