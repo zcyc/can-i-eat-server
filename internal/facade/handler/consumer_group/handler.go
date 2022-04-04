@@ -1,9 +1,9 @@
-package food_facade
+package consumer_group_facade
 
 import (
 	string_util "can-i-eat/common/util/string"
-	food_domain "can-i-eat/internal/domain/food"
-	food_service "can-i-eat/internal/service/food"
+	consumer_group_domain "can-i-eat/internal/domain/consumer_group"
+	consumer_group_service "can-i-eat/internal/service/consumer_group"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,7 +21,7 @@ func handlerList(c echo.Context) error {
 		return err
 	}
 
-	resp, err := food_service.Impl.ListForPage(size, page)
+	resp, err := consumer_group_service.Impl.ListForPage(size, page)
 	if err != nil {
 		return err
 	}
@@ -34,16 +34,16 @@ func handlerDetail(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	food, err := food_service.Impl.FoodDetail(id)
-	return c.JSON(http.StatusOK, food)
+	consumerGroup, err := consumer_group_service.Impl.FoodDetail(id)
+	return c.JSON(http.StatusOK, consumerGroup)
 }
 
 func handlerCreate(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	consumerGroup := new(consumer_group_domain.ConsumerGroup)
+	if err := c.Bind(consumerGroup); err != nil {
 		return err
 	}
-	id, err := food_service.Impl.Create(food)
+	id, err := consumer_group_service.Impl.Create(consumerGroup)
 	if err != nil {
 		return c.String(http.StatusOK, "创建失败")
 	}
@@ -51,11 +51,11 @@ func handlerCreate(c echo.Context) error {
 }
 
 func handlerUpdate(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	consumerGroup := new(consumer_group_domain.ConsumerGroup)
+	if err := c.Bind(consumerGroup); err != nil {
 		return err
 	}
-	err := food_service.Impl.Update(food)
+	err := consumer_group_service.Impl.Update(consumerGroup)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}
@@ -63,11 +63,11 @@ func handlerUpdate(c echo.Context) error {
 }
 
 func handlerDelete(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	consumerGroup := new(consumer_group_domain.ConsumerGroup)
+	if err := c.Bind(consumerGroup); err != nil {
 		return err
 	}
-	err := food_service.Impl.Delete(food)
+	err := consumer_group_service.Impl.Delete(consumerGroup)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}

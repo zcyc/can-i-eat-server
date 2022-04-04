@@ -1,4 +1,4 @@
-package food_facade
+package food_tag_facade
 
 import (
 	"fmt"
@@ -14,5 +14,5 @@ func RegisterHandlers(e *echo.Echo) {
 }
 
 func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/food%s", action)
+	return fmt.Sprintf("/v1/food-tag%s", action)
 }

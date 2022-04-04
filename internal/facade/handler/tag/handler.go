@@ -1,9 +1,9 @@
-package food_facade
+package tag_facade
 
 import (
 	string_util "can-i-eat/common/util/string"
-	food_domain "can-i-eat/internal/domain/food"
-	food_service "can-i-eat/internal/service/food"
+	tag_domain "can-i-eat/internal/domain/tag"
+	tag_service "can-i-eat/internal/service/tag"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,7 +21,7 @@ func handlerList(c echo.Context) error {
 		return err
 	}
 
-	resp, err := food_service.Impl.ListForPage(size, page)
+	resp, err := tag_service.Impl.ListForPage(size, page)
 	if err != nil {
 		return err
 	}
@@ -34,16 +34,16 @@ func handlerDetail(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	food, err := food_service.Impl.FoodDetail(id)
-	return c.JSON(http.StatusOK, food)
+	tag, err := tag_service.Impl.FoodDetail(id)
+	return c.JSON(http.StatusOK, tag)
 }
 
 func handlerCreate(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	tag := new(tag_domain.Tag)
+	if err := c.Bind(tag); err != nil {
 		return err
 	}
-	id, err := food_service.Impl.Create(food)
+	id, err := tag_service.Impl.Create(tag)
 	if err != nil {
 		return c.String(http.StatusOK, "创建失败")
 	}
@@ -51,11 +51,11 @@ func handlerCreate(c echo.Context) error {
 }
 
 func handlerUpdate(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	tag := new(tag_domain.Tag)
+	if err := c.Bind(tag); err != nil {
 		return err
 	}
-	err := food_service.Impl.Update(food)
+	err := tag_service.Impl.Update(tag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}
@@ -63,11 +63,11 @@ func handlerUpdate(c echo.Context) error {
 }
 
 func handlerDelete(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	tag := new(tag_domain.Tag)
+	if err := c.Bind(tag); err != nil {
 		return err
 	}
-	err := food_service.Impl.Delete(food)
+	err := tag_service.Impl.Delete(tag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}

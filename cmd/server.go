@@ -1,7 +1,13 @@
 package main
 
 import (
+	category_facade "can-i-eat/internal/facade/handler/category"
+	consumer_facade "can-i-eat/internal/facade/handler/consumer"
+	consumer_group_facade "can-i-eat/internal/facade/handler/consumer_group"
 	food_facade "can-i-eat/internal/facade/handler/food"
+	food_tag_facade "can-i-eat/internal/facade/handler/food_tag"
+	group_facade "can-i-eat/internal/facade/handler/group"
+	tag_facade "can-i-eat/internal/facade/handler/tag"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/labstack/echo/v4"
 )
@@ -24,6 +30,12 @@ func main() {
 func initFacade(e *echo.Echo) {
 	// 所有 facade 都在这里注册
 	food_facade.RegisterHandlers(e)
+	tag_facade.RegisterHandlers(e)
+	food_tag_facade.RegisterHandlers(e)
+	consumer_facade.RegisterHandlers(e)
+	group_facade.RegisterHandlers(e)
+	consumer_group_facade.RegisterHandlers(e)
+	category_facade.RegisterHandlers(e)
 }
 
 func initInfrastructure() {

@@ -1,4 +1,4 @@
-package food_facade
+package consumer_facade
 
 import (
 	string_util "can-i-eat/common/util/string"

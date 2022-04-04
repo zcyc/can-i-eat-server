@@ -18,7 +18,7 @@ type foodServiceImpl struct {
 
 func (f foodServiceImpl) Delete(food *food_domain.Food) error {
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
-	err := foodMgr.Update("flag", constant.Deleted).Error
+	err := foodMgr.Update("flag", constant.Deleted).Where("id=?", food.ID).Error
 	if err != nil {
 		return err
 	}
