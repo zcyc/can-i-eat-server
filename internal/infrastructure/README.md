@@ -1,0 +1,1 @@
+用于存放基础设施，如 mysql、redis、rabbitmq 等
