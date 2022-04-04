@@ -1,18 +1,18 @@
-package food_domain
+package tag_domain
 
 import (
 	"time"
 )
 
 type ListResp struct {
-	Items   []*Food `json:"items"`
-	Total   int     `json:"total"`
-	Current int     `json:"current"`
-	Size    int     `json:"size"`
+	Items   []*Tag `json:"items"`
+	Total   int    `json:"total"`
+	Current int    `json:"current"`
+	Size    int    `json:"size"`
 }
 
-// Food [...]
-type Food struct {
+// Tag [...]
+type Tag struct {
 	Active     int8      `gorm:"column:active" json:"active"`          // 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
 	Flag       int8      `gorm:"column:flag" json:"flag"`              // 是否删除 1 删除 0 未删除
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"` // 记录写入时间

@@ -11,12 +11,12 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-var Impl FoodService = &foodImpl{}
+var Impl FoodService = &foodServiceImpl{}
 
-type foodImpl struct {
+type foodServiceImpl struct {
 }
 
-func (f foodImpl) Delete(food *food_domain.Food) error {
+func (f foodServiceImpl) Delete(food *food_domain.Food) error {
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Update("flag", constant.Deleted).Error
 	if err != nil {
@@ -26,7 +26,7 @@ func (f foodImpl) Delete(food *food_domain.Food) error {
 	return nil
 }
 
-func (f foodImpl) Update(food *food_domain.Food) error {
+func (f foodServiceImpl) Update(food *food_domain.Food) error {
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Save(food).Error
 	if err != nil {
@@ -36,7 +36,7 @@ func (f foodImpl) Update(food *food_domain.Food) error {
 	return nil
 }
 
-func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, error) {
+func (f foodServiceImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, error) {
 	resp := new(food_domain.ListResp)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	foodPage := model.NewPage(size, page)
@@ -58,7 +58,7 @@ func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, er
 	return resp, nil
 }
 
-func (f foodImpl) FoodDetail(id int64) (*food_domain.Food, error) {
+func (f foodServiceImpl) FoodDetail(id int64) (*food_domain.Food, error) {
 	foodRepoList := make([]*food_repo.FoodDao, 0)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
@@ -70,7 +70,7 @@ func (f foodImpl) FoodDetail(id int64) (*food_domain.Food, error) {
 	return food, nil
 }
 
-func (f foodImpl) Create(food *food_domain.Food) (uint64, error) {
+func (f foodServiceImpl) Create(food *food_domain.Food) (uint64, error) {
 	foodDao := new(food_repo.FoodDao)
 	_ = copier.Copy(foodDao, food)
 	foodDao.ID, _ = id_util.NextID()
