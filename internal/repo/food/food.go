@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-// FoodRepo [...]
-type FoodRepo struct {
+// FoodDao [...]
+type FoodDao struct {
 	Active     int8      `gorm:"column:active" json:"active"`          // 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
 	Flag       int8      `gorm:"column:flag" json:"flag"`              // 是否删除 1 删除 0 未删除
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"` // 记录写入时间
@@ -15,7 +15,7 @@ type FoodRepo struct {
 }
 
 // TableName get sql table name.获取数据库表名
-func (m *FoodRepo) TableName() string {
+func (m *FoodDao) TableName() string {
 	return "food"
 }
 

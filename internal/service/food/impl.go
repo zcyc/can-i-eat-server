@@ -21,7 +21,7 @@ func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, er
 	result, err := foodMgr.SelectPage(foodPage)
 
 	foodList := make([]*food_domain.Food, 0)
-	for _, foodRepo := range result.GetRecords().([]food_repo.FoodRepo) {
+	for _, foodRepo := range result.GetRecords().([]food_repo.FoodDao) {
 		food := new(food_domain.Food)
 		_ = copier.Copy(&food, &foodRepo)
 		foodList = append(foodList, food)
@@ -35,7 +35,7 @@ func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, er
 }
 
 func (f foodImpl) FoodDetail(id int64) (*food_domain.Food, error) {
-	foodRepoList := make([]*food_repo.FoodRepo, 0)
+	foodRepoList := make([]*food_repo.FoodDao, 0)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
