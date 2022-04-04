@@ -1,6 +1,7 @@
 package food_service
 
 import (
+	"can-i-eat/common/constant"
 	food_domain "can-i-eat/internal/domain/food"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
@@ -14,11 +15,31 @@ var Impl FoodService = &foodImpl{}
 type foodImpl struct {
 }
 
+func (f foodImpl) Delete(food *food_domain.Food) error {
+	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
+	err := foodMgr.Update("flag", constant.Deleted).Error
+	if err != nil {
+		return err
+	}
+	log.Infof("delete food success: %d", food.ID)
+	return nil
+}
+
+func (f foodImpl) Update(food *food_domain.Food) error {
+	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
+	err := foodMgr.Save(food).Error
+	if err != nil {
+		return err
+	}
+	log.Infof("update food success: %d", food.ID)
+	return nil
+}
+
 func (f foodImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, error) {
 	resp := new(food_domain.ListResp)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	foodPage := model.NewPage(size, page)
-	result, err := foodMgr.SelectPage(foodPage)
+	result, err := foodMgr.SelectPage(foodPage, foodMgr.WithFlag(constant.Normal), foodMgr.WithActive(constant.Activated))
 
 	foodList := make([]*food_domain.Food, 0)
 	for _, foodRepo := range result.GetRecords().([]food_repo.FoodDao) {
