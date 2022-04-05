@@ -33,13 +33,7 @@ func Init() {
 	}
 
 	// 迁移 schema
-	_ = db.AutoMigrate(&food_repo.FoodDao{})
-	_ = db.AutoMigrate(&tag_repo.TagDao{})
-	_ = db.AutoMigrate(&food_tag_repo.FoodTagDao{})
-	_ = db.AutoMigrate(&consumer_repo.ConsumerDao{})
-	_ = db.AutoMigrate(&group_repo.GroupDao{})
-	_ = db.AutoMigrate(&consumer_group_repo.ConsumerGroupDao{})
-	_ = db.AutoMigrate(&category_repo.CategoryDao{})
+	_ = db.AutoMigrate(&food_repo.FoodDao{}, &tag_repo.TagDao{}, &food_tag_repo.FoodTagDao{}, &consumer_repo.ConsumerDao{}, &group_repo.GroupDao{}, &consumer_group_repo.ConsumerGroupDao{}, &category_repo.CategoryDao{})
 
 	mysqlClient = db
 }
