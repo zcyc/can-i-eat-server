@@ -72,8 +72,8 @@ func (f consumerServiceImpl) Detail(id int64) (*consumer_domain.Consumer, error)
 func (f consumerServiceImpl) Create(t *consumer_domain.Consumer) (string, error) {
 	consumerDao := new(model.Consumer)
 	_ = copier.Copy(consumerDao, t)
-	uuid, _ := uuid.NewV4()
-	consumerDao.ID = uuid.String()
+	newUUID, _ := uuid.NewV4()
+	consumerDao.ID = newUUID.String()
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
 	err := consumerMgr.Omit("create_time", "update_time").Create(consumerDao).Error
 	if err != nil {
