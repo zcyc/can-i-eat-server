@@ -37,7 +37,7 @@ func (f foodTagServiceImpl) Delete(foodTag *food_tag_domain.FoodTag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %d", foodTag.ID)
+	log.Infof("delete food success: %s", foodTag.ID)
 	return nil
 }
 
@@ -47,7 +47,7 @@ func (f foodTagServiceImpl) Update(foodTag *food_tag_domain.FoodTag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %d", foodTag.ID)
+	log.Infof("update food success: %s", foodTag.ID)
 	return nil
 }
 
@@ -94,6 +94,6 @@ func (f foodTagServiceImpl) Create(t *food_tag_domain.FoodTag) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.Infof("create food success: %d", foodTagDao.ID)
+	log.Infof("create food success: %s", foodTagDao.ID)
 	return foodTagDao.ID, nil
 }

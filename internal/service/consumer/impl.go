@@ -2,10 +2,10 @@ package consumer_service
 
 import (
 	"can-i-eat/common/constant"
-	id_util "can-i-eat/common/util/id"
 	consumer_domain "can-i-eat/internal/domain/consumer"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
+	"github.com/gofrs/uuid"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -21,7 +21,7 @@ func (f consumerServiceImpl) Delete(consumer *consumer_domain.Consumer) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete consumer success: %d", consumer.ID)
+	log.Infof("delete consumer success: %s", consumer.ID)
 	return nil
 }
 
@@ -31,7 +31,7 @@ func (f consumerServiceImpl) Update(consumer *consumer_domain.Consumer) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update consumer success: %d", consumer.ID)
+	log.Infof("update consumer success: %s", consumer.ID)
 	return nil
 }
 
@@ -69,15 +69,16 @@ func (f consumerServiceImpl) Detail(id int64) (*consumer_domain.Consumer, error)
 	return consumer, nil
 }
 
-func (f consumerServiceImpl) Create(consumer *consumer_domain.Consumer) (uint64, error) {
+func (f consumerServiceImpl) Create(t *consumer_domain.Consumer) (string, error) {
 	consumerDao := new(model.Consumer)
-	_ = copier.Copy(consumerDao, consumer)
-	consumerDao.ID, _ = id_util.NextID()
+	_ = copier.Copy(consumerDao, t)
+	uuid, _ := uuid.NewV4()
+	consumerDao.ID = uuid.String()
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
 	err := consumerMgr.Omit("create_time", "update_time").Create(consumerDao).Error
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	log.Infof("create consumer success: %d", consumerDao.ID)
+	log.Infof("create consumer success: %s", consumerDao.ID)
 	return consumerDao.ID, nil
 }

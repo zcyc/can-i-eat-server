@@ -22,7 +22,7 @@ func (f tagServiceImpl) Delete(tag *tag_domain.Tag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete tag success: %d", tag.ID)
+	log.Infof("delete tag success: %s", tag.ID)
 	return nil
 }
 
@@ -32,7 +32,7 @@ func (f tagServiceImpl) Update(tag *tag_domain.Tag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update tag success: %d", tag.ID)
+	log.Infof("update tag success: %s", tag.ID)
 	return nil
 }
 
@@ -79,6 +79,6 @@ func (f tagServiceImpl) Create(t *tag_domain.Tag) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.Infof("create tag success: %d", tagDao.ID)
+	log.Infof("create tag success: %s", tagDao.ID)
 	return tagDao.ID, nil
 }

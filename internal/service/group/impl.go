@@ -38,7 +38,7 @@ func (f groupServiceImpl) Delete(group *group_domain.Group) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete group success: %d", group.ID)
+	log.Infof("delete group success: %s", group.ID)
 	return nil
 }
 
@@ -48,7 +48,7 @@ func (f groupServiceImpl) Update(group *group_domain.Group) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update group success: %d", group.ID)
+	log.Infof("update group success: %s", group.ID)
 	return nil
 }
 
@@ -95,6 +95,6 @@ func (f groupServiceImpl) Create(t *group_domain.Group) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.Infof("create group success: %d", groupDao.ID)
+	log.Infof("create group success: %s", groupDao.ID)
 	return groupDao.ID, nil
 }

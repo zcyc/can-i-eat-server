@@ -27,7 +27,7 @@ func (f consumerGroupServiceImpl) ListByConsumer(id string) ([]*consumer_group_d
 		_ = copier.Copy(consumerGroup, consumerGroupDaoList[i])
 		consumerGroupList = append(consumerGroupList, consumerGroup)
 	}
-	log.Infof("ListByConsumer consumerGroup success: %d", len(consumerGroupList))
+	log.Infof("ListByConsumer consumerGroup success: %s", len(consumerGroupList))
 	return consumerGroupList, nil
 }
 
@@ -37,7 +37,7 @@ func (f consumerGroupServiceImpl) Delete(consumerGroup *consumer_group_domain.Co
 	if err != nil {
 		return err
 	}
-	log.Infof("delete consumerGroup success: %d", consumerGroup.ID)
+	log.Infof("delete consumerGroup success: %s", consumerGroup.ID)
 	return nil
 }
 
@@ -47,7 +47,7 @@ func (f consumerGroupServiceImpl) Update(consumerGroup *consumer_group_domain.Co
 	if err != nil {
 		return err
 	}
-	log.Infof("update consumerGroup success: %d", consumerGroup.ID)
+	log.Infof("update consumerGroup success: %s", consumerGroup.ID)
 	return nil
 }
 
@@ -94,6 +94,6 @@ func (f consumerGroupServiceImpl) Create(t *consumer_group_domain.ConsumerGroup)
 	if err != nil {
 		return "", err
 	}
-	log.Infof("create consumerGroup success: %d", consumerGroupDao.ID)
+	log.Infof("create consumerGroup success: %s", consumerGroupDao.ID)
 	return consumerGroupDao.ID, nil
 }

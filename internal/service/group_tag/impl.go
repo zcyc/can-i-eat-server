@@ -54,7 +54,7 @@ func (f groupTagServiceImpl) Delete(groupTag *group_tag_domain.GroupTag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete groupTag success: %d", groupTag.ID)
+	log.Infof("delete groupTag success: %s", groupTag.ID)
 	return nil
 }
 
@@ -64,7 +64,7 @@ func (f groupTagServiceImpl) Update(groupTag *group_tag_domain.GroupTag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update groupTag success: %d", groupTag.ID)
+	log.Infof("update groupTag success: %s", groupTag.ID)
 	return nil
 }
 
@@ -111,6 +111,6 @@ func (f groupTagServiceImpl) Create(t *group_tag_domain.GroupTag) (string, error
 	if err != nil {
 		return "", err
 	}
-	log.Infof("create groupTag success: %d", groupTagDao.ID)
+	log.Infof("create groupTag success: %s", groupTagDao.ID)
 	return groupTagDao.ID, nil
 }
