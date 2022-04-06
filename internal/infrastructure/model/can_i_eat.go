@@ -6,8 +6,8 @@ import (
 
 // Consumer [...]
 type Consumer struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
@@ -44,8 +44,8 @@ var ConsumerColumns = struct {
 
 // ConsumerGroup [...]
 type ConsumerGroup struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
@@ -79,8 +79,8 @@ var ConsumerGroupColumns = struct {
 
 // Food [...]
 type Food struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
@@ -114,8 +114,8 @@ var FoodColumns = struct {
 
 // FoodTag [...]
 type FoodTag struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
@@ -149,8 +149,8 @@ var FoodTagColumns = struct {
 
 // Group [...]
 type Group struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
@@ -181,8 +181,8 @@ var GroupColumns = struct {
 
 // GroupTag [...]
 type GroupTag struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
@@ -219,8 +219,8 @@ var GroupTagColumns = struct {
 
 // Tag [...]
 type Tag struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
+	Active     int8      `gorm:"column:active;default:1" json:"active"`
+	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
