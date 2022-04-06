@@ -6,7 +6,6 @@ import (
 	tag_domain "can-i-eat/internal/domain/tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
-	tag_repo "can-i-eat/internal/repo/tag"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -45,7 +44,7 @@ func (f tagServiceImpl) ListForPage(size int64, page int64) (*tag_domain.ListRes
 		return nil, err
 	}
 	tagList := make([]*tag_domain.Tag, 0)
-	for _, tagRepo := range result.GetRecords().([]tag_repo.TagDao) {
+	for _, tagRepo := range result.GetRecords().([]model.Tag) {
 		tag := new(tag_domain.Tag)
 		_ = copier.Copy(&tag, &tagRepo)
 		tagList = append(tagList, tag)
@@ -59,7 +58,7 @@ func (f tagServiceImpl) ListForPage(size int64, page int64) (*tag_domain.ListRes
 }
 
 func (f tagServiceImpl) FoodDetail(id int64) (*tag_domain.Tag, error) {
-	foodRepoList := make([]*tag_repo.TagDao, 0)
+	foodRepoList := make([]*model.Tag, 0)
 	tagMgr := model.TagMgr(mysql_infrastructure.Get())
 	err := tagMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
@@ -71,7 +70,7 @@ func (f tagServiceImpl) FoodDetail(id int64) (*tag_domain.Tag, error) {
 }
 
 func (f tagServiceImpl) Create(tag *tag_domain.Tag) (uint64, error) {
-	tagDao := new(tag_repo.TagDao)
+	tagDao := new(model.Tag)
 	_ = copier.Copy(tagDao, tag)
 	tagDao.ID, _ = id_util.NextID()
 	tagMgr := model.TagMgr(mysql_infrastructure.Get())

@@ -6,7 +6,6 @@ import (
 	category_domain "can-i-eat/internal/domain/category"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
-	category_repo "can-i-eat/internal/repo/category"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -45,7 +44,7 @@ func (f categoryServiceImpl) ListForPage(size int64, page int64) (*category_doma
 		return nil, err
 	}
 	categoryList := make([]*category_domain.Category, 0)
-	for _, categoryRepo := range result.GetRecords().([]category_repo.CategoryDao) {
+	for _, categoryRepo := range result.GetRecords().([]model.Category) {
 		category := new(category_domain.Category)
 		_ = copier.Copy(&category, &categoryRepo)
 		categoryList = append(categoryList, category)
@@ -59,7 +58,7 @@ func (f categoryServiceImpl) ListForPage(size int64, page int64) (*category_doma
 }
 
 func (f categoryServiceImpl) FoodDetail(id int64) (*category_domain.Category, error) {
-	foodRepoList := make([]*category_repo.CategoryDao, 0)
+	foodRepoList := make([]*model.Category, 0)
 	categoryMgr := model.CategoryMgr(mysql_infrastructure.Get())
 	err := categoryMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
@@ -71,7 +70,7 @@ func (f categoryServiceImpl) FoodDetail(id int64) (*category_domain.Category, er
 }
 
 func (f categoryServiceImpl) Create(category *category_domain.Category) (uint64, error) {
-	categoryDao := new(category_repo.CategoryDao)
+	categoryDao := new(model.Category)
 	_ = copier.Copy(categoryDao, category)
 	categoryDao.ID, _ = id_util.NextID()
 	categoryMgr := model.CategoryMgr(mysql_infrastructure.Get())

@@ -6,7 +6,6 @@ import (
 	consumer_group_domain "can-i-eat/internal/domain/consumer_group"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
-	consumer_group_repo "can-i-eat/internal/repo/consumer_group"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -45,7 +44,7 @@ func (f consumerGroupServiceImpl) ListForPage(size int64, page int64) (*consumer
 		return nil, err
 	}
 	consumerGroupList := make([]*consumer_group_domain.ConsumerGroup, 0)
-	for _, consumerGroupRepo := range result.GetRecords().([]consumer_group_repo.ConsumerGroupDao) {
+	for _, consumerGroupRepo := range result.GetRecords().([]model.ConsumerGroup) {
 		consumerGroup := new(consumer_group_domain.ConsumerGroup)
 		_ = copier.Copy(&consumerGroup, &consumerGroupRepo)
 		consumerGroupList = append(consumerGroupList, consumerGroup)
@@ -59,7 +58,7 @@ func (f consumerGroupServiceImpl) ListForPage(size int64, page int64) (*consumer
 }
 
 func (f consumerGroupServiceImpl) FoodDetail(id int64) (*consumer_group_domain.ConsumerGroup, error) {
-	foodRepoList := make([]*consumer_group_repo.ConsumerGroupDao, 0)
+	foodRepoList := make([]*model.ConsumerGroup, 0)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
@@ -71,7 +70,7 @@ func (f consumerGroupServiceImpl) FoodDetail(id int64) (*consumer_group_domain.C
 }
 
 func (f consumerGroupServiceImpl) Create(consumerGroup *consumer_group_domain.ConsumerGroup) (uint64, error) {
-	consumerGroupDao := new(consumer_group_repo.ConsumerGroupDao)
+	consumerGroupDao := new(model.ConsumerGroup)
 	_ = copier.Copy(consumerGroupDao, consumerGroup)
 	consumerGroupDao.ID, _ = id_util.NextID()
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())

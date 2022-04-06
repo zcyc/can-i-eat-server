@@ -6,7 +6,6 @@ import (
 	group_domain "can-i-eat/internal/domain/group"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
-	group_repo "can-i-eat/internal/repo/group"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -45,7 +44,7 @@ func (f groupServiceImpl) ListForPage(size int64, page int64) (*group_domain.Lis
 		return nil, err
 	}
 	groupList := make([]*group_domain.Group, 0)
-	for _, groupRepo := range result.GetRecords().([]group_repo.GroupDao) {
+	for _, groupRepo := range result.GetRecords().([]model.Group) {
 		group := new(group_domain.Group)
 		_ = copier.Copy(&group, &groupRepo)
 		groupList = append(groupList, group)
@@ -59,7 +58,7 @@ func (f groupServiceImpl) ListForPage(size int64, page int64) (*group_domain.Lis
 }
 
 func (f groupServiceImpl) FoodDetail(id int64) (*group_domain.Group, error) {
-	foodRepoList := make([]*group_repo.GroupDao, 0)
+	foodRepoList := make([]*model.Group, 0)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
@@ -71,7 +70,7 @@ func (f groupServiceImpl) FoodDetail(id int64) (*group_domain.Group, error) {
 }
 
 func (f groupServiceImpl) Create(group *group_domain.Group) (uint64, error) {
-	groupDao := new(group_repo.GroupDao)
+	groupDao := new(model.Group)
 	_ = copier.Copy(groupDao, group)
 	groupDao.ID, _ = id_util.NextID()
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())

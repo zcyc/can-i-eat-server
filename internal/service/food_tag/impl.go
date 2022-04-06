@@ -6,7 +6,6 @@ import (
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
-	food_tag_repo "can-i-eat/internal/repo/food_tag"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -45,7 +44,7 @@ func (f foodTagServiceImpl) ListForPage(size int64, page int64) (*food_tag_domai
 		return nil, err
 	}
 	foodTagList := make([]*food_tag_domain.FoodTag, 0)
-	for _, foodTagRepo := range result.GetRecords().([]food_tag_repo.FoodTagDao) {
+	for _, foodTagRepo := range result.GetRecords().([]model.FoodTag) {
 		foodTag := new(food_tag_domain.FoodTag)
 		_ = copier.Copy(&foodTag, &foodTagRepo)
 		foodTagList = append(foodTagList, foodTag)
@@ -59,7 +58,7 @@ func (f foodTagServiceImpl) ListForPage(size int64, page int64) (*food_tag_domai
 }
 
 func (f foodTagServiceImpl) FoodDetail(id int64) (*food_tag_domain.FoodTag, error) {
-	foodRepoList := make([]*food_tag_repo.FoodTagDao, 0)
+	foodRepoList := make([]*model.FoodTag, 0)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
@@ -71,7 +70,7 @@ func (f foodTagServiceImpl) FoodDetail(id int64) (*food_tag_domain.FoodTag, erro
 }
 
 func (f foodTagServiceImpl) Create(foodTag *food_tag_domain.FoodTag) (uint64, error) {
-	foodTagDao := new(food_tag_repo.FoodTagDao)
+	foodTagDao := new(model.FoodTag)
 	_ = copier.Copy(foodTagDao, foodTag)
 	foodTagDao.ID, _ = id_util.NextID()
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())

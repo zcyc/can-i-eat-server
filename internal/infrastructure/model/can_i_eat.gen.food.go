@@ -1,7 +1,6 @@
 package model
 
 import (
-	food_repo "can-i-eat/internal/repo/food"
 	"context"
 	"fmt"
 	"gorm.io/gorm"
@@ -33,44 +32,44 @@ func (obj *_FoodMgr) Reset() *_FoodMgr {
 }
 
 // Get 获取
-func (obj *_FoodMgr) Get() (result food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).First(&result).Error
+func (obj *_FoodMgr) Get() (result Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).First(&result).Error
 
 	return
 }
 
 // Gets 获取批量结果
-func (obj *_FoodMgr) Gets() (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Find(&results).Error
+func (obj *_FoodMgr) Gets() (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Find(&results).Error
 
 	return
 }
 
 ////////////////////////////////// gorm replace /////////////////////////////////
 func (obj *_FoodMgr) Count(count *int64) (tx *gorm.DB) {
-	return obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Count(count)
+	return obj.DB.WithContext(obj.ctx).Model(Food{}).Count(count)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////option case ////////////////////////////////////////////
 
-// WithActive active获取 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
+// WithActive active获取
 func (obj *_FoodMgr) WithActive(active int8) Option {
 	return optionFunc(func(o *options) { o.query["active"] = active })
 }
 
-// WithFlag flag获取 是否删除 1 删除 0 未删除
+// WithFlag flag获取
 func (obj *_FoodMgr) WithFlag(flag int8) Option {
 	return optionFunc(func(o *options) { o.query["flag"] = flag })
 }
 
-// WithCreateTime create_time获取 记录写入时间
+// WithCreateTime create_time获取
 func (obj *_FoodMgr) WithCreateTime(createTime time.Time) Option {
 	return optionFunc(func(o *options) { o.query["create_time"] = createTime })
 }
 
-// WithUpdateTime update_time获取 记录更新时间
+// WithUpdateTime update_time获取
 func (obj *_FoodMgr) WithUpdateTime(updateTime time.Time) Option {
 	return optionFunc(func(o *options) { o.query["update_time"] = updateTime })
 }
@@ -80,23 +79,28 @@ func (obj *_FoodMgr) WithID(id uint64) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
-// WithName name获取 名称
+// WithCategoryID category_id获取
+func (obj *_FoodMgr) WithCategoryID(categoryID uint64) Option {
+	return optionFunc(func(o *options) { o.query["category_id"] = categoryID })
+}
+
+// WithName name获取
 func (obj *_FoodMgr) WithName(name string) Option {
 	return optionFunc(func(o *options) { o.query["name"] = name })
 }
 
-// WithAlias alias获取 别名
+// WithAlias alias获取
 func (obj *_FoodMgr) WithAlias(alias string) Option {
 	return optionFunc(func(o *options) { o.query["alias"] = alias })
 }
 
-// WithCategory category获取 分类
+// WithCategory category获取
 func (obj *_FoodMgr) WithCategory(category string) Option {
 	return optionFunc(func(o *options) { o.query["category"] = category })
 }
 
 // GetByOption 功能选项模式获取
-func (obj *_FoodMgr) GetByOption(opts ...Option) (result food_repo.FoodDao, err error) {
+func (obj *_FoodMgr) GetByOption(opts ...Option) (result Food, err error) {
 	options := options{
 		query: make(map[string]interface{}, len(opts)),
 	}
@@ -104,13 +108,13 @@ func (obj *_FoodMgr) GetByOption(opts ...Option) (result food_repo.FoodDao, err 
 		o.apply(&options)
 	}
 
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where(options.query).First(&result).Error
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where(options.query).First(&result).Error
 
 	return
 }
 
 // GetByOptions 批量功能选项模式获取
-func (obj *_FoodMgr) GetByOptions(opts ...Option) (results []*food_repo.FoodDao, err error) {
+func (obj *_FoodMgr) GetByOptions(opts ...Option) (results []*Food, err error) {
 	options := options{
 		query: make(map[string]interface{}, len(opts)),
 	}
@@ -118,7 +122,7 @@ func (obj *_FoodMgr) GetByOptions(opts ...Option) (results []*food_repo.FoodDao,
 		o.apply(&options)
 	}
 
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where(options.query).Find(&results).Error
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where(options.query).Find(&results).Error
 
 	return
 }
@@ -132,9 +136,9 @@ func (obj *_FoodMgr) SelectPage(page IPage, opts ...Option) (resultPage IPage, e
 		o.apply(&options)
 	}
 	resultPage = page
-	results := make([]food_repo.FoodDao, 0)
+	results := make([]Food, 0)
 	var count int64 // 统计总的记录数
-	query := obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where(options.query)
+	query := obj.DB.WithContext(obj.ctx).Model(Food{}).Where(options.query)
 	query.Count(&count)
 	resultPage.SetTotal(count)
 	if len(page.GetOrederItemsString()) > 0 {
@@ -148,114 +152,128 @@ func (obj *_FoodMgr) SelectPage(page IPage, opts ...Option) (resultPage IPage, e
 
 //////////////////////////enume case ////////////////////////////////////////////
 
-// GetFromActive 通过active获取内容 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
-func (obj *_FoodMgr) GetFromActive(active int8) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`active` = ?", active).Find(&results).Error
+// GetFromActive 通过active获取内容
+func (obj *_FoodMgr) GetFromActive(active int8) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`active` = ?", active).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromActive 批量查找 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
-func (obj *_FoodMgr) GetBatchFromActive(actives []int8) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`active` IN (?)", actives).Find(&results).Error
+// GetBatchFromActive 批量查找
+func (obj *_FoodMgr) GetBatchFromActive(actives []int8) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`active` IN (?)", actives).Find(&results).Error
 
 	return
 }
 
-// GetFromFlag 通过flag获取内容 是否删除 1 删除 0 未删除
-func (obj *_FoodMgr) GetFromFlag(flag int8) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`flag` = ?", flag).Find(&results).Error
+// GetFromFlag 通过flag获取内容
+func (obj *_FoodMgr) GetFromFlag(flag int8) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`flag` = ?", flag).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromFlag 批量查找 是否删除 1 删除 0 未删除
-func (obj *_FoodMgr) GetBatchFromFlag(flags []int8) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`flag` IN (?)", flags).Find(&results).Error
+// GetBatchFromFlag 批量查找
+func (obj *_FoodMgr) GetBatchFromFlag(flags []int8) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`flag` IN (?)", flags).Find(&results).Error
 
 	return
 }
 
-// GetFromCreateTime 通过create_time获取内容 记录写入时间
-func (obj *_FoodMgr) GetFromCreateTime(createTime time.Time) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`create_time` = ?", createTime).Find(&results).Error
+// GetFromCreateTime 通过create_time获取内容
+func (obj *_FoodMgr) GetFromCreateTime(createTime time.Time) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`create_time` = ?", createTime).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromCreateTime 批量查找 记录写入时间
-func (obj *_FoodMgr) GetBatchFromCreateTime(createTimes []time.Time) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`create_time` IN (?)", createTimes).Find(&results).Error
+// GetBatchFromCreateTime 批量查找
+func (obj *_FoodMgr) GetBatchFromCreateTime(createTimes []time.Time) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`create_time` IN (?)", createTimes).Find(&results).Error
 
 	return
 }
 
-// GetFromUpdateTime 通过update_time获取内容 记录更新时间
-func (obj *_FoodMgr) GetFromUpdateTime(updateTime time.Time) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`update_time` = ?", updateTime).Find(&results).Error
+// GetFromUpdateTime 通过update_time获取内容
+func (obj *_FoodMgr) GetFromUpdateTime(updateTime time.Time) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`update_time` = ?", updateTime).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromUpdateTime 批量查找 记录更新时间
-func (obj *_FoodMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`update_time` IN (?)", updateTimes).Find(&results).Error
+// GetBatchFromUpdateTime 批量查找
+func (obj *_FoodMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`update_time` IN (?)", updateTimes).Find(&results).Error
 
 	return
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_FoodMgr) GetFromID(id uint64) (result food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`id` = ?", id).First(&result).Error
+func (obj *_FoodMgr) GetFromID(id uint64) (result Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_FoodMgr) GetBatchFromID(ids []uint64) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`id` IN (?)", ids).Find(&results).Error
+func (obj *_FoodMgr) GetBatchFromID(ids []uint64) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
 }
 
-// GetFromName 通过name获取内容 名称
-func (obj *_FoodMgr) GetFromName(name string) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`name` = ?", name).Find(&results).Error
+// GetFromCategoryID 通过category_id获取内容
+func (obj *_FoodMgr) GetFromCategoryID(categoryID uint64) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category_id` = ?", categoryID).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromName 批量查找 名称
-func (obj *_FoodMgr) GetBatchFromName(names []string) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`name` IN (?)", names).Find(&results).Error
+// GetBatchFromCategoryID 批量查找
+func (obj *_FoodMgr) GetBatchFromCategoryID(categoryIDs []uint64) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category_id` IN (?)", categoryIDs).Find(&results).Error
 
 	return
 }
 
-// GetFromAlias 通过alias获取内容 别名
-func (obj *_FoodMgr) GetFromAlias(alias string) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`alias` = ?", alias).Find(&results).Error
+// GetFromName 通过name获取内容
+func (obj *_FoodMgr) GetFromName(name string) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`name` = ?", name).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromAlias 批量查找 别名
-func (obj *_FoodMgr) GetBatchFromAlias(aliass []string) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`alias` IN (?)", aliass).Find(&results).Error
+// GetBatchFromName 批量查找
+func (obj *_FoodMgr) GetBatchFromName(names []string) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`name` IN (?)", names).Find(&results).Error
 
 	return
 }
 
-// GetFromCategory 通过category获取内容 分类
-func (obj *_FoodMgr) GetFromCategory(category string) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`category` = ?", category).Find(&results).Error
+// GetFromAlias 通过alias获取内容
+func (obj *_FoodMgr) GetFromAlias(alias string) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`alias` = ?", alias).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromCategory 批量查找 分类
-func (obj *_FoodMgr) GetBatchFromCategory(categorys []string) (results []*food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`category` IN (?)", categorys).Find(&results).Error
+// GetBatchFromAlias 批量查找
+func (obj *_FoodMgr) GetBatchFromAlias(aliass []string) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`alias` IN (?)", aliass).Find(&results).Error
+
+	return
+}
+
+// GetFromCategory 通过category获取内容
+func (obj *_FoodMgr) GetFromCategory(category string) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category` = ?", category).Find(&results).Error
+
+	return
+}
+
+// GetBatchFromCategory 批量查找
+func (obj *_FoodMgr) GetBatchFromCategory(categorys []string) (results []*Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category` IN (?)", categorys).Find(&results).Error
 
 	return
 }
@@ -263,8 +281,8 @@ func (obj *_FoodMgr) GetBatchFromCategory(categorys []string) (results []*food_r
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_FoodMgr) FetchByPrimaryKey(id uint64) (result food_repo.FoodDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(food_repo.FoodDao{}).Where("`id` = ?", id).First(&result).Error
+func (obj *_FoodMgr) FetchByPrimaryKey(id uint64) (result Food, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }

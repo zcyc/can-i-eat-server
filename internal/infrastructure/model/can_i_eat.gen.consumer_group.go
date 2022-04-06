@@ -1,7 +1,6 @@
 package model
 
 import (
-	consumer_group_repo "can-i-eat/internal/repo/consumer_group"
 	"context"
 	"fmt"
 	"gorm.io/gorm"
@@ -33,44 +32,44 @@ func (obj *_ConsumerGroupMgr) Reset() *_ConsumerGroupMgr {
 }
 
 // Get 获取
-func (obj *_ConsumerGroupMgr) Get() (result consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).First(&result).Error
+func (obj *_ConsumerGroupMgr) Get() (result ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).First(&result).Error
 
 	return
 }
 
 // Gets 获取批量结果
-func (obj *_ConsumerGroupMgr) Gets() (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Find(&results).Error
+func (obj *_ConsumerGroupMgr) Gets() (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Find(&results).Error
 
 	return
 }
 
 ////////////////////////////////// gorm replace /////////////////////////////////
 func (obj *_ConsumerGroupMgr) Count(count *int64) (tx *gorm.DB) {
-	return obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Count(count)
+	return obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Count(count)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////option case ////////////////////////////////////////////
 
-// WithActive active获取 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
+// WithActive active获取
 func (obj *_ConsumerGroupMgr) WithActive(active int8) Option {
 	return optionFunc(func(o *options) { o.query["active"] = active })
 }
 
-// WithFlag flag获取 是否删除 1 删除 0 未删除
+// WithFlag flag获取
 func (obj *_ConsumerGroupMgr) WithFlag(flag int8) Option {
 	return optionFunc(func(o *options) { o.query["flag"] = flag })
 }
 
-// WithCreateTime create_time获取 记录写入时间
+// WithCreateTime create_time获取
 func (obj *_ConsumerGroupMgr) WithCreateTime(createTime time.Time) Option {
 	return optionFunc(func(o *options) { o.query["create_time"] = createTime })
 }
 
-// WithUpdateTime update_time获取 记录更新时间
+// WithUpdateTime update_time获取
 func (obj *_ConsumerGroupMgr) WithUpdateTime(updateTime time.Time) Option {
 	return optionFunc(func(o *options) { o.query["update_time"] = updateTime })
 }
@@ -80,18 +79,18 @@ func (obj *_ConsumerGroupMgr) WithID(id uint64) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
-// WithConsumerID consumer_id获取 名称
+// WithConsumerID consumer_id获取
 func (obj *_ConsumerGroupMgr) WithConsumerID(consumerID int64) Option {
 	return optionFunc(func(o *options) { o.query["consumer_id"] = consumerID })
 }
 
-// WithGroupID group_id获取 别名
+// WithGroupID group_id获取
 func (obj *_ConsumerGroupMgr) WithGroupID(groupID int64) Option {
 	return optionFunc(func(o *options) { o.query["group_id"] = groupID })
 }
 
 // GetByOption 功能选项模式获取
-func (obj *_ConsumerGroupMgr) GetByOption(opts ...Option) (result consumer_group_repo.ConsumerGroupDao, err error) {
+func (obj *_ConsumerGroupMgr) GetByOption(opts ...Option) (result ConsumerGroup, err error) {
 	options := options{
 		query: make(map[string]interface{}, len(opts)),
 	}
@@ -99,13 +98,13 @@ func (obj *_ConsumerGroupMgr) GetByOption(opts ...Option) (result consumer_group
 		o.apply(&options)
 	}
 
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where(options.query).First(&result).Error
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where(options.query).First(&result).Error
 
 	return
 }
 
 // GetByOptions 批量功能选项模式获取
-func (obj *_ConsumerGroupMgr) GetByOptions(opts ...Option) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
+func (obj *_ConsumerGroupMgr) GetByOptions(opts ...Option) (results []*ConsumerGroup, err error) {
 	options := options{
 		query: make(map[string]interface{}, len(opts)),
 	}
@@ -113,7 +112,7 @@ func (obj *_ConsumerGroupMgr) GetByOptions(opts ...Option) (results []*consumer_
 		o.apply(&options)
 	}
 
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where(options.query).Find(&results).Error
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where(options.query).Find(&results).Error
 
 	return
 }
@@ -127,9 +126,9 @@ func (obj *_ConsumerGroupMgr) SelectPage(page IPage, opts ...Option) (resultPage
 		o.apply(&options)
 	}
 	resultPage = page
-	results := make([]consumer_group_repo.ConsumerGroupDao, 0)
+	results := make([]ConsumerGroup, 0)
 	var count int64 // 统计总的记录数
-	query := obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where(options.query)
+	query := obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where(options.query)
 	query.Count(&count)
 	resultPage.SetTotal(count)
 	if len(page.GetOrederItemsString()) > 0 {
@@ -143,100 +142,100 @@ func (obj *_ConsumerGroupMgr) SelectPage(page IPage, opts ...Option) (resultPage
 
 //////////////////////////enume case ////////////////////////////////////////////
 
-// GetFromActive 通过active获取内容 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
-func (obj *_ConsumerGroupMgr) GetFromActive(active int8) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`active` = ?", active).Find(&results).Error
+// GetFromActive 通过active获取内容
+func (obj *_ConsumerGroupMgr) GetFromActive(active int8) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`active` = ?", active).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromActive 批量查找 表示数据是否处于可用状态， active = 1 可用，active=0不可用，操作可逆转
-func (obj *_ConsumerGroupMgr) GetBatchFromActive(actives []int8) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`active` IN (?)", actives).Find(&results).Error
+// GetBatchFromActive 批量查找
+func (obj *_ConsumerGroupMgr) GetBatchFromActive(actives []int8) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`active` IN (?)", actives).Find(&results).Error
 
 	return
 }
 
-// GetFromFlag 通过flag获取内容 是否删除 1 删除 0 未删除
-func (obj *_ConsumerGroupMgr) GetFromFlag(flag int8) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`flag` = ?", flag).Find(&results).Error
+// GetFromFlag 通过flag获取内容
+func (obj *_ConsumerGroupMgr) GetFromFlag(flag int8) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`flag` = ?", flag).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromFlag 批量查找 是否删除 1 删除 0 未删除
-func (obj *_ConsumerGroupMgr) GetBatchFromFlag(flags []int8) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`flag` IN (?)", flags).Find(&results).Error
+// GetBatchFromFlag 批量查找
+func (obj *_ConsumerGroupMgr) GetBatchFromFlag(flags []int8) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`flag` IN (?)", flags).Find(&results).Error
 
 	return
 }
 
-// GetFromCreateTime 通过create_time获取内容 记录写入时间
-func (obj *_ConsumerGroupMgr) GetFromCreateTime(createTime time.Time) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`create_time` = ?", createTime).Find(&results).Error
+// GetFromCreateTime 通过create_time获取内容
+func (obj *_ConsumerGroupMgr) GetFromCreateTime(createTime time.Time) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`create_time` = ?", createTime).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromCreateTime 批量查找 记录写入时间
-func (obj *_ConsumerGroupMgr) GetBatchFromCreateTime(createTimes []time.Time) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`create_time` IN (?)", createTimes).Find(&results).Error
+// GetBatchFromCreateTime 批量查找
+func (obj *_ConsumerGroupMgr) GetBatchFromCreateTime(createTimes []time.Time) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`create_time` IN (?)", createTimes).Find(&results).Error
 
 	return
 }
 
-// GetFromUpdateTime 通过update_time获取内容 记录更新时间
-func (obj *_ConsumerGroupMgr) GetFromUpdateTime(updateTime time.Time) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`update_time` = ?", updateTime).Find(&results).Error
+// GetFromUpdateTime 通过update_time获取内容
+func (obj *_ConsumerGroupMgr) GetFromUpdateTime(updateTime time.Time) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`update_time` = ?", updateTime).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromUpdateTime 批量查找 记录更新时间
-func (obj *_ConsumerGroupMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`update_time` IN (?)", updateTimes).Find(&results).Error
+// GetBatchFromUpdateTime 批量查找
+func (obj *_ConsumerGroupMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`update_time` IN (?)", updateTimes).Find(&results).Error
 
 	return
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_ConsumerGroupMgr) GetFromID(id uint64) (result consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`id` = ?", id).First(&result).Error
+func (obj *_ConsumerGroupMgr) GetFromID(id uint64) (result ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_ConsumerGroupMgr) GetBatchFromID(ids []uint64) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`id` IN (?)", ids).Find(&results).Error
+func (obj *_ConsumerGroupMgr) GetBatchFromID(ids []uint64) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
 }
 
-// GetFromConsumerID 通过consumer_id获取内容 名称
-func (obj *_ConsumerGroupMgr) GetFromConsumerID(consumerID int64) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`consumer_id` = ?", consumerID).Find(&results).Error
+// GetFromConsumerID 通过consumer_id获取内容
+func (obj *_ConsumerGroupMgr) GetFromConsumerID(consumerID int64) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`consumer_id` = ?", consumerID).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromConsumerID 批量查找 名称
-func (obj *_ConsumerGroupMgr) GetBatchFromConsumerID(consumerIDs []int64) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`consumer_id` IN (?)", consumerIDs).Find(&results).Error
+// GetBatchFromConsumerID 批量查找
+func (obj *_ConsumerGroupMgr) GetBatchFromConsumerID(consumerIDs []int64) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`consumer_id` IN (?)", consumerIDs).Find(&results).Error
 
 	return
 }
 
-// GetFromGroupID 通过group_id获取内容 别名
-func (obj *_ConsumerGroupMgr) GetFromGroupID(groupID int64) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`group_id` = ?", groupID).Find(&results).Error
+// GetFromGroupID 通过group_id获取内容
+func (obj *_ConsumerGroupMgr) GetFromGroupID(groupID int64) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`group_id` = ?", groupID).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromGroupID 批量查找 别名
-func (obj *_ConsumerGroupMgr) GetBatchFromGroupID(groupIDs []int64) (results []*consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`group_id` IN (?)", groupIDs).Find(&results).Error
+// GetBatchFromGroupID 批量查找
+func (obj *_ConsumerGroupMgr) GetBatchFromGroupID(groupIDs []int64) (results []*ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`group_id` IN (?)", groupIDs).Find(&results).Error
 
 	return
 }
@@ -244,8 +243,8 @@ func (obj *_ConsumerGroupMgr) GetBatchFromGroupID(groupIDs []int64) (results []*
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_ConsumerGroupMgr) FetchByPrimaryKey(id uint64) (result consumer_group_repo.ConsumerGroupDao, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(consumer_group_repo.ConsumerGroupDao{}).Where("`id` = ?", id).First(&result).Error
+func (obj *_ConsumerGroupMgr) FetchByPrimaryKey(id uint64) (result ConsumerGroup, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }

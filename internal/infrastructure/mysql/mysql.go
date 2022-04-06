@@ -2,13 +2,7 @@ package mysql_infrastructure
 
 import (
 	"can-i-eat/config"
-	category_repo "can-i-eat/internal/repo/category"
-	consumer_repo "can-i-eat/internal/repo/consumer"
-	consumer_group_repo "can-i-eat/internal/repo/consumer_group"
-	food_repo "can-i-eat/internal/repo/food"
-	food_tag_repo "can-i-eat/internal/repo/food_tag"
-	group_repo "can-i-eat/internal/repo/group"
-	tag_repo "can-i-eat/internal/repo/tag"
+	"can-i-eat/internal/infrastructure/model"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -33,7 +27,7 @@ func Init() {
 	}
 
 	// 迁移 schema
-	_ = db.AutoMigrate(&food_repo.FoodDao{}, &tag_repo.TagDao{}, &food_tag_repo.FoodTagDao{}, &consumer_repo.ConsumerDao{}, &group_repo.GroupDao{}, &consumer_group_repo.ConsumerGroupDao{}, &category_repo.CategoryDao{})
+	_ = db.AutoMigrate(&model.Food{}, &model.Tag{}, &model.FoodTag{}, &model.Consumer{}, &model.Group{}, &model.ConsumerGroup{}, &model.Category{})
 
 	mysqlClient = db
 }
