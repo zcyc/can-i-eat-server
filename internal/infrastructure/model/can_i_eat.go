@@ -10,7 +10,7 @@ type Consumer struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	Account    string    `gorm:"column:account" json:"account"`
 	Password   string    `gorm:"column:password" json:"password"`
@@ -48,7 +48,7 @@ type ConsumerGroup struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	ConsumerID string    `gorm:"column:consumer_id" json:"consumerId"`
 	GroupID    string    `gorm:"column:group_id" json:"groupId"`
 }
@@ -83,7 +83,7 @@ type Food struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	Alias      string    `gorm:"column:alias" json:"alias"`
 }
@@ -118,7 +118,7 @@ type FoodTag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	FoodID     string    `gorm:"column:food_id" json:"foodId"`
 	TagID      string    `gorm:"column:tag_id" json:"tagId"`
 }
@@ -153,7 +153,7 @@ type Group struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 }
 
@@ -185,7 +185,7 @@ type GroupTag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	GroupID    string    `gorm:"column:group_id" json:"groupId"`
 	TagID      string    `gorm:"column:tag_id" json:"tagId"`
 	Type       string    `gorm:"column:type" json:"type"`
@@ -223,7 +223,7 @@ type Tag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	ParentID   string    `gorm:"column:parent_id" json:"parentId"`
 }

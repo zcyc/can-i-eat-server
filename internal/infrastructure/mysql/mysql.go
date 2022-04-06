@@ -2,7 +2,6 @@ package mysql_infrastructure
 
 import (
 	"can-i-eat/config"
-	"can-i-eat/internal/infrastructure/model"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -27,7 +26,7 @@ func Init() {
 	}
 
 	// 迁移 schema
-	_ = db.AutoMigrate(&model.Food{}, &model.Tag{}, &model.FoodTag{}, &model.Consumer{}, &model.Group{}, &model.ConsumerGroup{})
+	//_ = db.AutoMigrate(&model.Food{}, &model.Tag{}, &model.FoodTag{}, &model.Consumer{}, &model.Group{}, &model.ConsumerGroup{})
 
 	mysqlClient = db
 }

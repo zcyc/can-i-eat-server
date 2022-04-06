@@ -17,7 +17,7 @@ type FoodTag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	FoodID     string    `gorm:"column:food_id" json:"foodId"`
 	TagID      string    `gorm:"column:tag_id" json:"tagId"`
 }

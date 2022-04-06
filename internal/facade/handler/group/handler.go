@@ -9,16 +9,16 @@ import (
 )
 
 func handlerList(c echo.Context) error {
-	sizeStr := c.QueryParam("page")
-	pageStr := c.QueryParam("size")
-
-	size, err := string_util.StringToInt64(sizeStr)
-	if err != nil {
-		return err
-	}
+	pageStr := c.QueryParam("page")
 	page, err := string_util.StringToInt64(pageStr)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	sizeStr := c.QueryParam("size")
+	size, err := string_util.StringToInt64(sizeStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	resp, err := group_service.Impl.List(size, page)

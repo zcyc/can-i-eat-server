@@ -17,7 +17,7 @@ type Tag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	ParentID   string    `gorm:"column:parent_id" json:"parentId"`
 }
