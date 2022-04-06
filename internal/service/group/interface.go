@@ -10,4 +10,5 @@ type GroupService interface {
 	Create(t *group_domain.Group) (uint64, error)
 	Update(t *group_domain.Group) error
 	Delete(t *group_domain.Group) error
+	ListByIDs(id []int64) ([]*group_domain.Group, error)
 }

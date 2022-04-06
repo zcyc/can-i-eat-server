@@ -15,6 +15,23 @@ var Impl FoodTagService = &foodTagServiceImpl{}
 type foodTagServiceImpl struct {
 }
 
+func (f foodTagServiceImpl) ListByTagList(ids []int64) ([]*food_tag_domain.FoodTag, error) {
+	foodTagDaoList := make([]*model.FoodTag, 0)
+	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
+	err := foodTagMgr.Where("tag_id in ?", ids).Find(&foodTagDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	foodTagList := make([]*food_tag_domain.FoodTag, 0)
+	for _, foodTagRepo := range foodTagDaoList {
+		foodTag := new(food_tag_domain.FoodTag)
+		_ = copier.Copy(&foodTag, &foodTagRepo)
+		foodTagList = append(foodTagList, foodTag)
+	}
+
+	return foodTagList, nil
+}
+
 func (f foodTagServiceImpl) Delete(foodTag *food_tag_domain.FoodTag) error {
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Update("flag", constant.Deleted).Where("id=?", foodTag.ID).Error

@@ -10,4 +10,5 @@ type FoodTagService interface {
 	Create(t *food_tag_domain.FoodTag) (uint64, error)
 	Update(t *food_tag_domain.FoodTag) error
 	Delete(t *food_tag_domain.FoodTag) error
+	ListByTagList(ids []int64) ([]*food_tag_domain.FoodTag, error)
 }

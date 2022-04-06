@@ -15,6 +15,40 @@ var Impl GroupTagService = &groupTagServiceImpl{}
 type groupTagServiceImpl struct {
 }
 
+func (f groupTagServiceImpl) ListByGroupIDs(ids []int64) ([]*group_tag_domain.GroupTag, error) {
+	groupTagDaoList := make([]*model.GroupTag, 0)
+	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
+	err := groupTagMgr.Where("group_id in ?", ids).Find(&groupTagDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	groupTagList := make([]*group_tag_domain.GroupTag, 0)
+	for _, groupTagRepo := range groupTagDaoList {
+		groupTag := new(group_tag_domain.GroupTag)
+		_ = copier.Copy(&groupTag, &groupTagRepo)
+		groupTagList = append(groupTagList, groupTag)
+	}
+
+	return groupTagList, nil
+}
+
+func (f groupTagServiceImpl) ListByGroup(id int64) ([]*group_tag_domain.GroupTag, error) {
+	groupTagDaoList := make([]*model.GroupTag, 0)
+	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
+	err := groupTagMgr.Where("group_id = ?", id).Find(&groupTagDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	groupTagList := make([]*group_tag_domain.GroupTag, 0)
+	for _, groupTagRepo := range groupTagDaoList {
+		groupTag := new(group_tag_domain.GroupTag)
+		_ = copier.Copy(&groupTag, &groupTagRepo)
+		groupTagList = append(groupTagList, groupTag)
+	}
+
+	return groupTagList, nil
+}
+
 func (f groupTagServiceImpl) Delete(groupTag *group_tag_domain.GroupTag) error {
 	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
 	err := groupTagMgr.Update("flag", constant.Deleted).Where("id=?", groupTag.ID).Error

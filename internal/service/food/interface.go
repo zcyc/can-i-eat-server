@@ -10,4 +10,5 @@ type FoodService interface {
 	Create(t *food_domain.Food) (uint64, error)
 	Update(t *food_domain.Food) error
 	Delete(t *food_domain.Food) error
+	ListByIDs(ids []int64) ([]*food_domain.Food, error)
 }

@@ -10,4 +10,6 @@ type GroupTagService interface {
 	Create(t *group_tag_domain.GroupTag) (uint64, error)
 	Update(t *group_tag_domain.GroupTag) error
 	Delete(t *group_tag_domain.GroupTag) error
+	ListByGroup(id int64) ([]*group_tag_domain.GroupTag, error)
+	ListByGroupIDs(id []int64) ([]*group_tag_domain.GroupTag, error)
 }

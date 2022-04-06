@@ -15,6 +15,23 @@ var Impl ConsumerGroupService = &consumerGroupServiceImpl{}
 type consumerGroupServiceImpl struct {
 }
 
+func (f consumerGroupServiceImpl) ListByConsumer(id int64) ([]*consumer_group_domain.ConsumerGroup, error) {
+	consumerGroupDaoList := make([]*model.ConsumerGroup, 0)
+	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
+	err := consumerGroupMgr.Where("consumer_id = ?", id).Find(&consumerGroupDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	consumerGroupList := make([]*consumer_group_domain.ConsumerGroup, 0)
+	for i := range consumerGroupDaoList {
+		consumerGroup := new(consumer_group_domain.ConsumerGroup)
+		_ = copier.Copy(consumerGroup, consumerGroupDaoList[i])
+		consumerGroupList = append(consumerGroupList, consumerGroup)
+	}
+	log.Infof("ListByConsumer consumerGroup success: %d", len(consumerGroupList))
+	return consumerGroupList, nil
+}
+
 func (f consumerGroupServiceImpl) Delete(consumerGroup *consumer_group_domain.ConsumerGroup) error {
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Update("flag", constant.Deleted).Where("id=?", consumerGroup.ID).Error

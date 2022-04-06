@@ -15,6 +15,22 @@ var Impl GroupService = &groupServiceImpl{}
 type groupServiceImpl struct {
 }
 
+func (f groupServiceImpl) ListByIDs(id []int64) ([]*group_domain.Group, error) {
+	groupDaoList := make([]*model.Group, 0)
+	groupMgr := model.GroupMgr(mysql_infrastructure.Get())
+	err := groupMgr.Where("id in ?", id).Find(&groupDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	groupList := make([]*group_domain.Group, 0)
+	for i := range groupDaoList {
+		group := new(group_domain.Group)
+		_ = copier.Copy(&group, &groupDaoList[i])
+		groupList = append(groupList, group)
+	}
+	return groupList, nil
+}
+
 func (f groupServiceImpl) Delete(group *group_domain.Group) error {
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Update("flag", constant.Deleted).Where("id=?", group.ID).Error

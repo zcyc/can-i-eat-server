@@ -15,6 +15,23 @@ var Impl FoodService = &foodServiceImpl{}
 type foodServiceImpl struct {
 }
 
+func (f foodServiceImpl) ListByIDs(ids []int64) ([]*food_domain.Food, error) {
+	foodDaoList := make([]*model.Food, 0)
+	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
+	err := foodMgr.Where("id in ?", ids).Find(&foodDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	foodList := make([]*food_domain.Food, 0)
+	for _, foodRepo := range foodDaoList {
+		food := new(food_domain.Food)
+		_ = copier.Copy(&food, &foodRepo)
+		foodList = append(foodList, food)
+	}
+
+	return foodList, nil
+}
+
 func (f foodServiceImpl) Delete(food *food_domain.Food) error {
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Update("flag", constant.Deleted).Where("id=?", food.ID).Error
