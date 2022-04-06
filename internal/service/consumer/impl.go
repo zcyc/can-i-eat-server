@@ -6,7 +6,6 @@ import (
 	consumer_domain "can-i-eat/internal/domain/consumer"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
-	consumer_repo "can-i-eat/internal/repo/consumer"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 )
@@ -45,7 +44,7 @@ func (f consumerServiceImpl) ListForPage(size int64, page int64) (*consumer_doma
 		return nil, err
 	}
 	consumerList := make([]*consumer_domain.Consumer, 0)
-	for _, consumerRepo := range result.GetRecords().([]consumer_repo.ConsumerDao) {
+	for _, consumerRepo := range result.GetRecords().([]model.Consumer) {
 		consumer := new(consumer_domain.Consumer)
 		_ = copier.Copy(&consumer, &consumerRepo)
 		consumerList = append(consumerList, consumer)
@@ -59,7 +58,7 @@ func (f consumerServiceImpl) ListForPage(size int64, page int64) (*consumer_doma
 }
 
 func (f consumerServiceImpl) FoodDetail(id int64) (*consumer_domain.Consumer, error) {
-	foodRepoList := make([]*consumer_repo.ConsumerDao, 0)
+	foodRepoList := make([]*model.Consumer, 0)
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
 	err := consumerMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
 	if err != nil {
@@ -71,7 +70,7 @@ func (f consumerServiceImpl) FoodDetail(id int64) (*consumer_domain.Consumer, er
 }
 
 func (f consumerServiceImpl) Create(consumer *consumer_domain.Consumer) (uint64, error) {
-	consumerDao := new(consumer_repo.ConsumerDao)
+	consumerDao := new(model.Consumer)
 	_ = copier.Copy(consumerDao, consumer)
 	consumerDao.ID, _ = id_util.NextID()
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
