@@ -2,7 +2,6 @@ package food_tag_service
 
 import (
 	"can-i-eat/common/constant"
-	id_util "can-i-eat/common/util/id"
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
@@ -15,7 +14,7 @@ var Impl FoodTagService = &foodTagServiceImpl{}
 type foodTagServiceImpl struct {
 }
 
-func (f foodTagServiceImpl) ListByTagList(ids []int64) ([]*food_tag_domain.FoodTag, error) {
+func (f foodTagServiceImpl) ListByTagList(ids []string) ([]*food_tag_domain.FoodTag, error) {
 	foodTagDaoList := make([]*model.FoodTag, 0)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Where("tag_id in ?", ids).Find(&foodTagDaoList).Error
@@ -74,7 +73,7 @@ func (f foodTagServiceImpl) List(size int64, page int64) (*food_tag_domain.ListR
 	return resp, nil
 }
 
-func (f foodTagServiceImpl) Detail(id int64) (*food_tag_domain.FoodTag, error) {
+func (f foodTagServiceImpl) Detail(id string) (*food_tag_domain.FoodTag, error) {
 	foodRepoList := make([]*model.FoodTag, 0)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
@@ -86,14 +85,14 @@ func (f foodTagServiceImpl) Detail(id int64) (*food_tag_domain.FoodTag, error) {
 	return food, nil
 }
 
-func (f foodTagServiceImpl) Create(foodTag *food_tag_domain.FoodTag) (uint64, error) {
+func (f foodTagServiceImpl) Create(t *food_tag_domain.FoodTag) (string, error) {
 	foodTagDao := new(model.FoodTag)
-	_ = copier.Copy(foodTagDao, foodTag)
-	foodTagDao.ID, _ = id_util.NextID()
+	_ = copier.Copy(foodTagDao, t)
+	foodTagDao.ID = foodTagDao.FoodID + "_" + foodTagDao.TagID
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Omit("create_time", "update_time").Create(foodTagDao).Error
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	log.Infof("create food success: %d", foodTagDao.ID)
 	return foodTagDao.ID, nil

@@ -6,9 +6,9 @@ import (
 
 type FoodTagService interface {
 	List(size int64, page int64) (*food_tag_domain.ListResp, error)
-	Detail(id int64) (*food_tag_domain.FoodTag, error)
-	Create(t *food_tag_domain.FoodTag) (uint64, error)
+	Detail(id string) (*food_tag_domain.FoodTag, error)
+	Create(t *food_tag_domain.FoodTag) (string, error)
 	Update(t *food_tag_domain.FoodTag) error
 	Delete(t *food_tag_domain.FoodTag) error
-	ListByTagList(ids []int64) ([]*food_tag_domain.FoodTag, error)
+	ListByTagList(ids []string) ([]*food_tag_domain.FoodTag, error)
 }

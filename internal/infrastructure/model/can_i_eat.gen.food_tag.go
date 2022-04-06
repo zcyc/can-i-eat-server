@@ -75,17 +75,17 @@ func (obj *_FoodTagMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_FoodTagMgr) WithID(id uint64) Option {
+func (obj *_FoodTagMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
 // WithFoodID food_id获取
-func (obj *_FoodTagMgr) WithFoodID(foodID int64) Option {
+func (obj *_FoodTagMgr) WithFoodID(foodID string) Option {
 	return optionFunc(func(o *options) { o.query["food_id"] = foodID })
 }
 
 // WithTagID tag_id获取
-func (obj *_FoodTagMgr) WithTagID(tagID int64) Option {
+func (obj *_FoodTagMgr) WithTagID(tagID string) Option {
 	return optionFunc(func(o *options) { o.query["tag_id"] = tagID })
 }
 
@@ -199,42 +199,42 @@ func (obj *_FoodTagMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_FoodTagMgr) GetFromID(id uint64) (result FoodTag, err error) {
+func (obj *_FoodTagMgr) GetFromID(id string) (result FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_FoodTagMgr) GetBatchFromID(ids []uint64) (results []*FoodTag, err error) {
+func (obj *_FoodTagMgr) GetBatchFromID(ids []string) (results []*FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
 }
 
 // GetFromFoodID 通过food_id获取内容
-func (obj *_FoodTagMgr) GetFromFoodID(foodID int64) (results []*FoodTag, err error) {
+func (obj *_FoodTagMgr) GetFromFoodID(foodID string) (results []*FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`food_id` = ?", foodID).Find(&results).Error
 
 	return
 }
 
 // GetBatchFromFoodID 批量查找
-func (obj *_FoodTagMgr) GetBatchFromFoodID(foodIDs []int64) (results []*FoodTag, err error) {
+func (obj *_FoodTagMgr) GetBatchFromFoodID(foodIDs []string) (results []*FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`food_id` IN (?)", foodIDs).Find(&results).Error
 
 	return
 }
 
 // GetFromTagID 通过tag_id获取内容
-func (obj *_FoodTagMgr) GetFromTagID(tagID int64) (results []*FoodTag, err error) {
+func (obj *_FoodTagMgr) GetFromTagID(tagID string) (results []*FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`tag_id` = ?", tagID).Find(&results).Error
 
 	return
 }
 
 // GetBatchFromTagID 批量查找
-func (obj *_FoodTagMgr) GetBatchFromTagID(tagIDs []int64) (results []*FoodTag, err error) {
+func (obj *_FoodTagMgr) GetBatchFromTagID(tagIDs []string) (results []*FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`tag_id` IN (?)", tagIDs).Find(&results).Error
 
 	return
@@ -243,7 +243,7 @@ func (obj *_FoodTagMgr) GetBatchFromTagID(tagIDs []int64) (results []*FoodTag, e
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_FoodTagMgr) FetchByPrimaryKey(id uint64) (result FoodTag, err error) {
+func (obj *_FoodTagMgr) FetchByPrimaryKey(id string) (result FoodTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`id` = ?", id).First(&result).Error
 
 	return

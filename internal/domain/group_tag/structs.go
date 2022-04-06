@@ -17,8 +17,8 @@ type GroupTag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
-	GroupID    int64     `gorm:"column:group_id" json:"groupId"`
-	TagID      int64     `gorm:"column:tag_id" json:"tagId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	GroupID    string    `gorm:"column:group_id" json:"groupId"`
+	TagID      string    `gorm:"column:tag_id" json:"tagId"`
 	Type       string    `gorm:"column:type" json:"type"`
 }

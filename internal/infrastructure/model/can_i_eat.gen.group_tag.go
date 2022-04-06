@@ -75,17 +75,17 @@ func (obj *_GroupTagMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_GroupTagMgr) WithID(id uint64) Option {
+func (obj *_GroupTagMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
 // WithGroupID group_id获取
-func (obj *_GroupTagMgr) WithGroupID(groupID int64) Option {
+func (obj *_GroupTagMgr) WithGroupID(groupID string) Option {
 	return optionFunc(func(o *options) { o.query["group_id"] = groupID })
 }
 
 // WithTagID tag_id获取
-func (obj *_GroupTagMgr) WithTagID(tagID int64) Option {
+func (obj *_GroupTagMgr) WithTagID(tagID string) Option {
 	return optionFunc(func(o *options) { o.query["tag_id"] = tagID })
 }
 
@@ -204,42 +204,42 @@ func (obj *_GroupTagMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (result
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_GroupTagMgr) GetFromID(id uint64) (result GroupTag, err error) {
+func (obj *_GroupTagMgr) GetFromID(id string) (result GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_GroupTagMgr) GetBatchFromID(ids []uint64) (results []*GroupTag, err error) {
+func (obj *_GroupTagMgr) GetBatchFromID(ids []string) (results []*GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
 }
 
 // GetFromGroupID 通过group_id获取内容
-func (obj *_GroupTagMgr) GetFromGroupID(groupID int64) (results []*GroupTag, err error) {
+func (obj *_GroupTagMgr) GetFromGroupID(groupID string) (results []*GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`group_id` = ?", groupID).Find(&results).Error
 
 	return
 }
 
 // GetBatchFromGroupID 批量查找
-func (obj *_GroupTagMgr) GetBatchFromGroupID(groupIDs []int64) (results []*GroupTag, err error) {
+func (obj *_GroupTagMgr) GetBatchFromGroupID(groupIDs []string) (results []*GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`group_id` IN (?)", groupIDs).Find(&results).Error
 
 	return
 }
 
 // GetFromTagID 通过tag_id获取内容
-func (obj *_GroupTagMgr) GetFromTagID(tagID int64) (results []*GroupTag, err error) {
+func (obj *_GroupTagMgr) GetFromTagID(tagID string) (results []*GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`tag_id` = ?", tagID).Find(&results).Error
 
 	return
 }
 
 // GetBatchFromTagID 批量查找
-func (obj *_GroupTagMgr) GetBatchFromTagID(tagIDs []int64) (results []*GroupTag, err error) {
+func (obj *_GroupTagMgr) GetBatchFromTagID(tagIDs []string) (results []*GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`tag_id` IN (?)", tagIDs).Find(&results).Error
 
 	return
@@ -262,7 +262,7 @@ func (obj *_GroupTagMgr) GetBatchFromType(_types []string) (results []*GroupTag,
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_GroupTagMgr) FetchByPrimaryKey(id uint64) (result GroupTag, err error) {
+func (obj *_GroupTagMgr) FetchByPrimaryKey(id string) (result GroupTag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(GroupTag{}).Where("`id` = ?", id).First(&result).Error
 
 	return

@@ -6,10 +6,10 @@ import (
 
 type GroupTagService interface {
 	List(size int64, page int64) (*group_tag_domain.ListResp, error)
-	Detail(id int64) (*group_tag_domain.GroupTag, error)
-	Create(t *group_tag_domain.GroupTag) (uint64, error)
+	Detail(id string) (*group_tag_domain.GroupTag, error)
+	Create(t *group_tag_domain.GroupTag) (string, error)
 	Update(t *group_tag_domain.GroupTag) error
 	Delete(t *group_tag_domain.GroupTag) error
-	ListByGroup(id int64) ([]*group_tag_domain.GroupTag, error)
-	ListByGroupIDs(id []int64) ([]*group_tag_domain.GroupTag, error)
+	ListByGroup(id string) ([]*group_tag_domain.GroupTag, error)
+	ListByGroupIDs(id []string) ([]*group_tag_domain.GroupTag, error)
 }

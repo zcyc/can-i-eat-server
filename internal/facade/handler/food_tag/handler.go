@@ -4,6 +4,7 @@ import (
 	string_util "can-i-eat/common/util/string"
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
 	food_tag_service "can-i-eat/internal/service/food_tag"
+	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -29,12 +30,11 @@ func handlerList(c echo.Context) error {
 }
 
 func handlerDetail(c echo.Context) error {
-	idStr := c.QueryParam("id")
-	id, err := string_util.StringToInt64(idStr)
-	if err != nil {
-		return err
+	id := c.QueryParam("id")
+	if id == "" {
+		return errors.New("参数错误")
 	}
-	foodTag, err := food_tag_service.Impl.Detail(id)
+	foodTag, _ := food_tag_service.Impl.Detail(id)
 	return c.JSON(http.StatusOK, foodTag)
 }
 

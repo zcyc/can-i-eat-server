@@ -75,13 +75,8 @@ func (obj *_FoodMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_FoodMgr) WithID(id uint64) Option {
+func (obj *_FoodMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
-}
-
-// WithCategoryID category_id获取
-func (obj *_FoodMgr) WithCategoryID(categoryID uint64) Option {
-	return optionFunc(func(o *options) { o.query["category_id"] = categoryID })
 }
 
 // WithName name获取
@@ -204,29 +199,15 @@ func (obj *_FoodMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results []
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_FoodMgr) GetFromID(id uint64) (result Food, err error) {
+func (obj *_FoodMgr) GetFromID(id string) (result Food, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_FoodMgr) GetBatchFromID(ids []uint64) (results []*Food, err error) {
+func (obj *_FoodMgr) GetBatchFromID(ids []string) (results []*Food, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`id` IN (?)", ids).Find(&results).Error
-
-	return
-}
-
-// GetFromCategoryID 通过category_id获取内容
-func (obj *_FoodMgr) GetFromCategoryID(categoryID uint64) (results []*Food, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category_id` = ?", categoryID).Find(&results).Error
-
-	return
-}
-
-// GetBatchFromCategoryID 批量查找
-func (obj *_FoodMgr) GetBatchFromCategoryID(categoryIDs []uint64) (results []*Food, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category_id` IN (?)", categoryIDs).Find(&results).Error
 
 	return
 }
@@ -262,7 +243,7 @@ func (obj *_FoodMgr) GetBatchFromAlias(aliass []string) (results []*Food, err er
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_FoodMgr) FetchByPrimaryKey(id uint64) (result Food, err error) {
+func (obj *_FoodMgr) FetchByPrimaryKey(id string) (result Food, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`id` = ?", id).First(&result).Error
 
 	return

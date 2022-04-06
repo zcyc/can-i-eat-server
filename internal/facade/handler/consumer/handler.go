@@ -29,12 +29,11 @@ func handlerList(c echo.Context) error {
 }
 
 func handlerDetail(c echo.Context) error {
-	idStr := c.QueryParam("id")
-	id, err := string_util.StringToInt64(idStr)
-	if err != nil {
-		return err
+	id := c.QueryParam("id")
+	if id == "" {
+		return c.JSON(http.StatusOK, "参数错误")
 	}
-	food, err := food_service.Impl.Detail(id)
+	food, _ := food_service.Impl.Detail(id)
 	return c.JSON(http.StatusOK, food)
 }
 

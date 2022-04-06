@@ -75,7 +75,7 @@ func (obj *_GroupMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_GroupMgr) WithID(id uint64) Option {
+func (obj *_GroupMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
@@ -194,14 +194,14 @@ func (obj *_GroupMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results [
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_GroupMgr) GetFromID(id uint64) (result Group, err error) {
+func (obj *_GroupMgr) GetFromID(id string) (result Group, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Group{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_GroupMgr) GetBatchFromID(ids []uint64) (results []*Group, err error) {
+func (obj *_GroupMgr) GetBatchFromID(ids []string) (results []*Group, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Group{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
@@ -224,7 +224,7 @@ func (obj *_GroupMgr) GetBatchFromName(names []string) (results []*Group, err er
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_GroupMgr) FetchByPrimaryKey(id uint64) (result Group, err error) {
+func (obj *_GroupMgr) FetchByPrimaryKey(id string) (result Group, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Group{}).Where("`id` = ?", id).First(&result).Error
 
 	return

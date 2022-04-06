@@ -27,7 +27,7 @@ func Init() {
 	}
 
 	// 迁移 schema
-	_ = db.AutoMigrate(&model.Food{}, &model.Tag{}, &model.FoodTag{}, &model.Consumer{}, &model.Group{}, &model.ConsumerGroup{}, &model.Category{})
+	_ = db.AutoMigrate(&model.Food{}, &model.Tag{}, &model.FoodTag{}, &model.Consumer{}, &model.Group{}, &model.ConsumerGroup{})
 
 	mysqlClient = db
 }

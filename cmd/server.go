@@ -1,7 +1,6 @@
 package main
 
 import (
-	category_facade "can-i-eat/internal/facade/handler/category"
 	consumer_facade "can-i-eat/internal/facade/handler/consumer"
 	consumer_group_facade "can-i-eat/internal/facade/handler/consumer_group"
 	food_facade "can-i-eat/internal/facade/handler/food"
@@ -35,7 +34,6 @@ func initFacade(e *echo.Echo) {
 	consumer_facade.RegisterHandlers(e)
 	group_facade.RegisterHandlers(e)
 	consumer_group_facade.RegisterHandlers(e)
-	category_facade.RegisterHandlers(e)
 }
 
 // initInfrastructure 初始化基础设施

@@ -2,7 +2,6 @@ package consumer_group_service
 
 import (
 	"can-i-eat/common/constant"
-	id_util "can-i-eat/common/util/id"
 	consumer_group_domain "can-i-eat/internal/domain/consumer_group"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
@@ -15,7 +14,7 @@ var Impl ConsumerGroupService = &consumerGroupServiceImpl{}
 type consumerGroupServiceImpl struct {
 }
 
-func (f consumerGroupServiceImpl) ListByConsumer(id int64) ([]*consumer_group_domain.ConsumerGroup, error) {
+func (f consumerGroupServiceImpl) ListByConsumer(id string) ([]*consumer_group_domain.ConsumerGroup, error) {
 	consumerGroupDaoList := make([]*model.ConsumerGroup, 0)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Where("consumer_id = ?", id).Find(&consumerGroupDaoList).Error
@@ -74,7 +73,7 @@ func (f consumerGroupServiceImpl) List(size int64, page int64) (*consumer_group_
 	return resp, nil
 }
 
-func (f consumerGroupServiceImpl) Detail(id int64) (*consumer_group_domain.ConsumerGroup, error) {
+func (f consumerGroupServiceImpl) Detail(id string) (*consumer_group_domain.ConsumerGroup, error) {
 	consumerGroupDaoList := make([]*model.ConsumerGroup, 0)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&consumerGroupDaoList).Error
@@ -86,14 +85,14 @@ func (f consumerGroupServiceImpl) Detail(id int64) (*consumer_group_domain.Consu
 	return consumerGroup, nil
 }
 
-func (f consumerGroupServiceImpl) Create(consumerGroup *consumer_group_domain.ConsumerGroup) (uint64, error) {
+func (f consumerGroupServiceImpl) Create(t *consumer_group_domain.ConsumerGroup) (string, error) {
 	consumerGroupDao := new(model.ConsumerGroup)
-	_ = copier.Copy(consumerGroupDao, consumerGroup)
-	consumerGroupDao.ID, _ = id_util.NextID()
+	_ = copier.Copy(consumerGroupDao, t)
+	consumerGroupDao.ID = consumerGroupDao.ConsumerID + "_" + consumerGroupDao.GroupID
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	err := consumerGroupMgr.Omit("create_time", "update_time").Create(consumerGroupDao).Error
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	log.Infof("create consumerGroup success: %d", consumerGroupDao.ID)
 	return consumerGroupDao.ID, nil

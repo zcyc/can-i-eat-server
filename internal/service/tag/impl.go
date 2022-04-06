@@ -2,12 +2,13 @@ package tag_service
 
 import (
 	"can-i-eat/common/constant"
-	id_util "can-i-eat/common/util/id"
 	tag_domain "can-i-eat/internal/domain/tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
+	"github.com/mozillazg/go-pinyin"
+	"strings"
 )
 
 var Impl TagService = &tagServiceImpl{}
@@ -69,14 +70,14 @@ func (f tagServiceImpl) Detail(id int64) (*tag_domain.Tag, error) {
 	return tag, nil
 }
 
-func (f tagServiceImpl) Create(tag *tag_domain.Tag) (uint64, error) {
+func (f tagServiceImpl) Create(t *tag_domain.Tag) (string, error) {
 	tagDao := new(model.Tag)
-	_ = copier.Copy(tagDao, tag)
-	tagDao.ID, _ = id_util.NextID()
+	_ = copier.Copy(tagDao, t)
+	tagDao.ID = strings.Join(pinyin.LazyConvert(tagDao.Name, nil), "_")
 	tagMgr := model.TagMgr(mysql_infrastructure.Get())
 	err := tagMgr.Omit("create_time", "update_time").Create(tagDao).Error
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	log.Infof("create tag success: %d", tagDao.ID)
 	return tagDao.ID, nil

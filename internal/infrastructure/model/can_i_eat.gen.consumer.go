@@ -75,7 +75,7 @@ func (obj *_ConsumerMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_ConsumerMgr) WithID(id uint64) Option {
+func (obj *_ConsumerMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
@@ -204,14 +204,14 @@ func (obj *_ConsumerMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (result
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_ConsumerMgr) GetFromID(id uint64) (result Consumer, err error) {
+func (obj *_ConsumerMgr) GetFromID(id string) (result Consumer, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Consumer{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_ConsumerMgr) GetBatchFromID(ids []uint64) (results []*Consumer, err error) {
+func (obj *_ConsumerMgr) GetBatchFromID(ids []string) (results []*Consumer, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Consumer{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
@@ -262,7 +262,7 @@ func (obj *_ConsumerMgr) GetBatchFromPassword(passwords []string) (results []*Co
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_ConsumerMgr) FetchByPrimaryKey(id uint64) (result Consumer, err error) {
+func (obj *_ConsumerMgr) FetchByPrimaryKey(id string) (result Consumer, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Consumer{}).Where("`id` = ?", id).First(&result).Error
 
 	return

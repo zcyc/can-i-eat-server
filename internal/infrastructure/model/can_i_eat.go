@@ -4,45 +4,13 @@ import (
 	"time"
 )
 
-// Category [...]
-type Category struct {
-	Active     int8      `gorm:"column:active" json:"active"`
-	Flag       int8      `gorm:"column:flag" json:"flag"`
-	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
-	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
-	Name       string    `gorm:"column:name" json:"name"`
-}
-
-// TableName get sql table name.获取数据库表名
-func (m *Category) TableName() string {
-	return "category"
-}
-
-// CategoryColumns get sql column name.获取数据库列名
-var CategoryColumns = struct {
-	Active     string
-	Flag       string
-	CreateTime string
-	UpdateTime string
-	ID         string
-	Name       string
-}{
-	Active:     "active",
-	Flag:       "flag",
-	CreateTime: "create_time",
-	UpdateTime: "update_time",
-	ID:         "id",
-	Name:       "name",
-}
-
 // Consumer [...]
 type Consumer struct {
 	Active     int8      `gorm:"column:active" json:"active"`
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	Account    string    `gorm:"column:account" json:"account"`
 	Password   string    `gorm:"column:password" json:"password"`
@@ -80,9 +48,9 @@ type ConsumerGroup struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
-	ConsumerID int64     `gorm:"column:consumer_id" json:"consumerId"`
-	GroupID    int64     `gorm:"column:group_id" json:"groupId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ConsumerID string    `gorm:"column:consumer_id" json:"consumerId"`
+	GroupID    string    `gorm:"column:group_id" json:"groupId"`
 }
 
 // TableName get sql table name.获取数据库表名
@@ -115,8 +83,7 @@ type Food struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
-	CategoryID uint64    `gorm:"column:category_id" json:"categoryId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	Alias      string    `gorm:"column:alias" json:"alias"`
 }
@@ -133,7 +100,6 @@ var FoodColumns = struct {
 	CreateTime string
 	UpdateTime string
 	ID         string
-	CategoryID string
 	Name       string
 	Alias      string
 }{
@@ -142,7 +108,6 @@ var FoodColumns = struct {
 	CreateTime: "create_time",
 	UpdateTime: "update_time",
 	ID:         "id",
-	CategoryID: "category_id",
 	Name:       "name",
 	Alias:      "alias",
 }
@@ -153,9 +118,9 @@ type FoodTag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
-	FoodID     int64     `gorm:"column:food_id" json:"foodId"`
-	TagID      int64     `gorm:"column:tag_id" json:"tagId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	FoodID     string    `gorm:"column:food_id" json:"foodId"`
+	TagID      string    `gorm:"column:tag_id" json:"tagId"`
 }
 
 // TableName get sql table name.获取数据库表名
@@ -188,7 +153,7 @@ type Group struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 }
 
@@ -220,9 +185,9 @@ type GroupTag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
-	GroupID    int64     `gorm:"column:group_id" json:"groupId"`
-	TagID      int64     `gorm:"column:tag_id" json:"tagId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	GroupID    string    `gorm:"column:group_id" json:"groupId"`
+	TagID      string    `gorm:"column:tag_id" json:"tagId"`
 	Type       string    `gorm:"column:type" json:"type"`
 }
 
@@ -258,8 +223,9 @@ type Tag struct {
 	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
+	ParentID   string    `gorm:"column:parent_id" json:"parentId"`
 }
 
 // TableName get sql table name.获取数据库表名
@@ -275,6 +241,7 @@ var TagColumns = struct {
 	UpdateTime string
 	ID         string
 	Name       string
+	ParentID   string
 }{
 	Active:     "active",
 	Flag:       "flag",
@@ -282,4 +249,5 @@ var TagColumns = struct {
 	UpdateTime: "update_time",
 	ID:         "id",
 	Name:       "name",
+	ParentID:   "parent_id",
 }

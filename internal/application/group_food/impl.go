@@ -6,8 +6,8 @@ import (
 	food_service "can-i-eat/internal/service/food"
 	food_tag_service "can-i-eat/internal/service/food_tag"
 	group_tag_service "can-i-eat/internal/service/group_tag"
+	"errors"
 	"github.com/labstack/echo/v4"
-	"strconv"
 )
 
 var Impl GroupFoodApplication = &groupFoodApplicationImpl{}
@@ -16,17 +16,16 @@ type groupFoodApplicationImpl struct {
 }
 
 func (g groupFoodApplicationImpl) ListFoodByGroup(c echo.Context) ([]*food_domain.Food, error) {
-	groupIDStr := c.QueryParam("group-id")
-	groupID, err := strconv.ParseInt(groupIDStr, 10, 64)
-	if err != nil {
-		return nil, err
+	groupID := c.QueryParam("group-id")
+	if groupID == "" {
+		return nil, errors.New("参数错误")
 	}
 	groupTagList, err := group_tag_service.Impl.ListByGroup(groupID)
 	if err != nil {
 		return nil, err
 	}
 
-	var tagIDList []int64
+	var tagIDList []string
 	for i := range groupTagList {
 		tagIDList = append(tagIDList, groupTagList[i].TagID)
 	}
@@ -36,7 +35,7 @@ func (g groupFoodApplicationImpl) ListFoodByGroup(c echo.Context) ([]*food_domai
 		return nil, err
 	}
 
-	var foodIDList []int64
+	var foodIDList []string
 	for i := range foodTagList {
 		foodIDList = append(foodIDList, foodTagList[i].FoodID)
 	}
@@ -46,14 +45,13 @@ func (g groupFoodApplicationImpl) ListFoodByGroup(c echo.Context) ([]*food_domai
 }
 
 func (g groupFoodApplicationImpl) ListFoodByConsumer(c echo.Context) ([]*food_domain.Food, error) {
-	consumerIDStr := c.QueryParam("consumer-id")
-	consumerID, err := strconv.ParseInt(consumerIDStr, 10, 64)
+	consumerID := c.QueryParam("consumer-id")
 	consumerGroupList, err := consumer_group_service.Impl.ListByConsumer(consumerID)
 	if err != nil {
 		return nil, err
 	}
 
-	var groupIDList []int64
+	var groupIDList []string
 	for i := range consumerGroupList {
 		groupIDList = append(groupIDList, consumerGroupList[i].GroupID)
 	}
@@ -63,7 +61,7 @@ func (g groupFoodApplicationImpl) ListFoodByConsumer(c echo.Context) ([]*food_do
 		return nil, err
 	}
 
-	var tagIDList []int64
+	var tagIDList []string
 	for i := range groupTagList {
 		tagIDList = append(tagIDList, groupTagList[i].TagID)
 	}
@@ -73,7 +71,7 @@ func (g groupFoodApplicationImpl) ListFoodByConsumer(c echo.Context) ([]*food_do
 		return nil, err
 	}
 
-	var foodIDList []int64
+	var foodIDList []string
 	for i := range foodTagList {
 		foodIDList = append(foodIDList, foodTagList[i].FoodID)
 	}

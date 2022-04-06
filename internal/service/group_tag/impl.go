@@ -2,7 +2,6 @@ package group_tag_service
 
 import (
 	"can-i-eat/common/constant"
-	id_util "can-i-eat/common/util/id"
 	"can-i-eat/internal/domain/group_tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
@@ -15,7 +14,7 @@ var Impl GroupTagService = &groupTagServiceImpl{}
 type groupTagServiceImpl struct {
 }
 
-func (f groupTagServiceImpl) ListByGroupIDs(ids []int64) ([]*group_tag_domain.GroupTag, error) {
+func (f groupTagServiceImpl) ListByGroupIDs(ids []string) ([]*group_tag_domain.GroupTag, error) {
 	groupTagDaoList := make([]*model.GroupTag, 0)
 	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
 	err := groupTagMgr.Where("group_id in ?", ids).Find(&groupTagDaoList).Error
@@ -32,7 +31,7 @@ func (f groupTagServiceImpl) ListByGroupIDs(ids []int64) ([]*group_tag_domain.Gr
 	return groupTagList, nil
 }
 
-func (f groupTagServiceImpl) ListByGroup(id int64) ([]*group_tag_domain.GroupTag, error) {
+func (f groupTagServiceImpl) ListByGroup(id string) ([]*group_tag_domain.GroupTag, error) {
 	groupTagDaoList := make([]*model.GroupTag, 0)
 	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
 	err := groupTagMgr.Where("group_id = ?", id).Find(&groupTagDaoList).Error
@@ -91,7 +90,7 @@ func (f groupTagServiceImpl) List(size int64, page int64) (*group_tag_domain.Lis
 	return resp, nil
 }
 
-func (f groupTagServiceImpl) Detail(id int64) (*group_tag_domain.GroupTag, error) {
+func (f groupTagServiceImpl) Detail(id string) (*group_tag_domain.GroupTag, error) {
 	groupTagDaoList := make([]*model.GroupTag, 0)
 	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
 	err := groupTagMgr.Where("id=?", id).Limit(1).Find(&groupTagDaoList).Error
@@ -103,14 +102,14 @@ func (f groupTagServiceImpl) Detail(id int64) (*group_tag_domain.GroupTag, error
 	return groupTag, nil
 }
 
-func (f groupTagServiceImpl) Create(groupTag *group_tag_domain.GroupTag) (uint64, error) {
+func (f groupTagServiceImpl) Create(t *group_tag_domain.GroupTag) (string, error) {
 	groupTagDao := new(model.GroupTag)
-	_ = copier.Copy(groupTagDao, groupTag)
-	groupTagDao.ID, _ = id_util.NextID()
+	_ = copier.Copy(groupTagDao, t)
+	groupTagDao.ID = groupTagDao.GroupID + "_" + groupTagDao.TagID
 	groupTagMgr := model.GroupTagMgr(mysql_infrastructure.Get())
 	err := groupTagMgr.Omit("create_time", "update_time").Create(groupTagDao).Error
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	log.Infof("create groupTag success: %d", groupTagDao.ID)
 	return groupTagDao.ID, nil

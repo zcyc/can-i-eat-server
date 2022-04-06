@@ -75,13 +75,18 @@ func (obj *_TagMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_TagMgr) WithID(id uint64) Option {
+func (obj *_TagMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
 // WithName name获取
 func (obj *_TagMgr) WithName(name string) Option {
 	return optionFunc(func(o *options) { o.query["name"] = name })
+}
+
+// WithParentID parent_id获取
+func (obj *_TagMgr) WithParentID(parentID string) Option {
+	return optionFunc(func(o *options) { o.query["parent_id"] = parentID })
 }
 
 // GetByOption 功能选项模式获取
@@ -194,14 +199,14 @@ func (obj *_TagMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (results []*
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_TagMgr) GetFromID(id uint64) (result Tag, err error) {
+func (obj *_TagMgr) GetFromID(id string) (result Tag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_TagMgr) GetBatchFromID(ids []uint64) (results []*Tag, err error) {
+func (obj *_TagMgr) GetBatchFromID(ids []string) (results []*Tag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
@@ -221,10 +226,24 @@ func (obj *_TagMgr) GetBatchFromName(names []string) (results []*Tag, err error)
 	return
 }
 
+// GetFromParentID 通过parent_id获取内容
+func (obj *_TagMgr) GetFromParentID(parentID string) (results []*Tag, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`parent_id` = ?", parentID).Find(&results).Error
+
+	return
+}
+
+// GetBatchFromParentID 批量查找
+func (obj *_TagMgr) GetBatchFromParentID(parentIDs []string) (results []*Tag, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`parent_id` IN (?)", parentIDs).Find(&results).Error
+
+	return
+}
+
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_TagMgr) FetchByPrimaryKey(id uint64) (result Tag, err error) {
+func (obj *_TagMgr) FetchByPrimaryKey(id string) (result Tag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`id` = ?", id).First(&result).Error
 
 	return

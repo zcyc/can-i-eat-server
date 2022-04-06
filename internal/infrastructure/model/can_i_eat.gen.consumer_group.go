@@ -75,17 +75,17 @@ func (obj *_ConsumerGroupMgr) WithUpdateTime(updateTime time.Time) Option {
 }
 
 // WithID id获取 主键
-func (obj *_ConsumerGroupMgr) WithID(id uint64) Option {
+func (obj *_ConsumerGroupMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
 // WithConsumerID consumer_id获取
-func (obj *_ConsumerGroupMgr) WithConsumerID(consumerID int64) Option {
+func (obj *_ConsumerGroupMgr) WithConsumerID(consumerID string) Option {
 	return optionFunc(func(o *options) { o.query["consumer_id"] = consumerID })
 }
 
 // WithGroupID group_id获取
-func (obj *_ConsumerGroupMgr) WithGroupID(groupID int64) Option {
+func (obj *_ConsumerGroupMgr) WithGroupID(groupID string) Option {
 	return optionFunc(func(o *options) { o.query["group_id"] = groupID })
 }
 
@@ -199,42 +199,42 @@ func (obj *_ConsumerGroupMgr) GetBatchFromUpdateTime(updateTimes []time.Time) (r
 }
 
 // GetFromID 通过id获取内容 主键
-func (obj *_ConsumerGroupMgr) GetFromID(id uint64) (result ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) GetFromID(id string) (result ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`id` = ?", id).First(&result).Error
 
 	return
 }
 
 // GetBatchFromID 批量查找 主键
-func (obj *_ConsumerGroupMgr) GetBatchFromID(ids []uint64) (results []*ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) GetBatchFromID(ids []string) (results []*ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`id` IN (?)", ids).Find(&results).Error
 
 	return
 }
 
 // GetFromConsumerID 通过consumer_id获取内容
-func (obj *_ConsumerGroupMgr) GetFromConsumerID(consumerID int64) (results []*ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) GetFromConsumerID(consumerID string) (results []*ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`consumer_id` = ?", consumerID).Find(&results).Error
 
 	return
 }
 
 // GetBatchFromConsumerID 批量查找
-func (obj *_ConsumerGroupMgr) GetBatchFromConsumerID(consumerIDs []int64) (results []*ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) GetBatchFromConsumerID(consumerIDs []string) (results []*ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`consumer_id` IN (?)", consumerIDs).Find(&results).Error
 
 	return
 }
 
 // GetFromGroupID 通过group_id获取内容
-func (obj *_ConsumerGroupMgr) GetFromGroupID(groupID int64) (results []*ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) GetFromGroupID(groupID string) (results []*ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`group_id` = ?", groupID).Find(&results).Error
 
 	return
 }
 
 // GetBatchFromGroupID 批量查找
-func (obj *_ConsumerGroupMgr) GetBatchFromGroupID(groupIDs []int64) (results []*ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) GetBatchFromGroupID(groupIDs []string) (results []*ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`group_id` IN (?)", groupIDs).Find(&results).Error
 
 	return
@@ -243,7 +243,7 @@ func (obj *_ConsumerGroupMgr) GetBatchFromGroupID(groupIDs []int64) (results []*
 //////////////////////////primary index case ////////////////////////////////////////////
 
 // FetchByPrimaryKey primary or index 获取唯一内容
-func (obj *_ConsumerGroupMgr) FetchByPrimaryKey(id uint64) (result ConsumerGroup, err error) {
+func (obj *_ConsumerGroupMgr) FetchByPrimaryKey(id string) (result ConsumerGroup, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(ConsumerGroup{}).Where("`id` = ?", id).First(&result).Error
 
 	return

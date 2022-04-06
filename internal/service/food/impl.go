@@ -2,12 +2,13 @@ package food_service
 
 import (
 	"can-i-eat/common/constant"
-	id_util "can-i-eat/common/util/id"
 	food_domain "can-i-eat/internal/domain/food"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
+	"github.com/mozillazg/go-pinyin"
+	"strings"
 )
 
 var Impl FoodService = &foodServiceImpl{}
@@ -15,7 +16,7 @@ var Impl FoodService = &foodServiceImpl{}
 type foodServiceImpl struct {
 }
 
-func (f foodServiceImpl) ListByIDs(ids []int64) ([]*food_domain.Food, error) {
+func (f foodServiceImpl) ListByIDs(ids []string) ([]*food_domain.Food, error) {
 	foodDaoList := make([]*model.Food, 0)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Where("id in ?", ids).Find(&foodDaoList).Error
@@ -74,7 +75,7 @@ func (f foodServiceImpl) List(size int64, page int64) (*food_domain.ListResp, er
 	return resp, nil
 }
 
-func (f foodServiceImpl) Detail(id int64) (*food_domain.Food, error) {
+func (f foodServiceImpl) Detail(id string) (*food_domain.Food, error) {
 	foodRepoList := make([]*model.Food, 0)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
@@ -86,14 +87,14 @@ func (f foodServiceImpl) Detail(id int64) (*food_domain.Food, error) {
 	return food, nil
 }
 
-func (f foodServiceImpl) Create(food *food_domain.Food) (uint64, error) {
+func (f foodServiceImpl) Create(t *food_domain.Food) (string, error) {
 	foodDao := new(model.Food)
-	_ = copier.Copy(foodDao, food)
-	foodDao.ID, _ = id_util.NextID()
+	_ = copier.Copy(foodDao, t)
+	foodDao.ID = strings.Join(pinyin.LazyConvert(foodDao.Name, nil), "_")
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Omit("create_time", "update_time").Create(foodDao).Error
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	log.Infof("create food success: %d", foodDao.ID)
 	return foodDao.ID, nil
