@@ -119,7 +119,6 @@ type Food struct {
 	CategoryID uint64    `gorm:"column:category_id" json:"categoryId"`
 	Name       string    `gorm:"column:name" json:"name"`
 	Alias      string    `gorm:"column:alias" json:"alias"`
-	Category   string    `gorm:"column:category" json:"category"`
 }
 
 // TableName get sql table name.获取数据库表名
@@ -137,7 +136,6 @@ var FoodColumns = struct {
 	CategoryID string
 	Name       string
 	Alias      string
-	Category   string
 }{
 	Active:     "active",
 	Flag:       "flag",
@@ -147,7 +145,6 @@ var FoodColumns = struct {
 	CategoryID: "category_id",
 	Name:       "name",
 	Alias:      "alias",
-	Category:   "category",
 }
 
 // FoodTag [...]
@@ -263,8 +260,6 @@ type Tag struct {
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
 	ID         uint64    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
-	Alias      string    `gorm:"column:alias" json:"alias"`
-	Category   string    `gorm:"column:category" json:"category"`
 }
 
 // TableName get sql table name.获取数据库表名
@@ -280,8 +275,6 @@ var TagColumns = struct {
 	UpdateTime string
 	ID         string
 	Name       string
-	Alias      string
-	Category   string
 }{
 	Active:     "active",
 	Flag:       "flag",
@@ -289,6 +282,4 @@ var TagColumns = struct {
 	UpdateTime: "update_time",
 	ID:         "id",
 	Name:       "name",
-	Alias:      "alias",
-	Category:   "category",
 }

@@ -84,16 +84,6 @@ func (obj *_TagMgr) WithName(name string) Option {
 	return optionFunc(func(o *options) { o.query["name"] = name })
 }
 
-// WithAlias alias获取
-func (obj *_TagMgr) WithAlias(alias string) Option {
-	return optionFunc(func(o *options) { o.query["alias"] = alias })
-}
-
-// WithCategory category获取
-func (obj *_TagMgr) WithCategory(category string) Option {
-	return optionFunc(func(o *options) { o.query["category"] = category })
-}
-
 // GetByOption 功能选项模式获取
 func (obj *_TagMgr) GetByOption(opts ...Option) (result Tag, err error) {
 	options := options{
@@ -227,34 +217,6 @@ func (obj *_TagMgr) GetFromName(name string) (results []*Tag, err error) {
 // GetBatchFromName 批量查找
 func (obj *_TagMgr) GetBatchFromName(names []string) (results []*Tag, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`name` IN (?)", names).Find(&results).Error
-
-	return
-}
-
-// GetFromAlias 通过alias获取内容
-func (obj *_TagMgr) GetFromAlias(alias string) (results []*Tag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`alias` = ?", alias).Find(&results).Error
-
-	return
-}
-
-// GetBatchFromAlias 批量查找
-func (obj *_TagMgr) GetBatchFromAlias(aliass []string) (results []*Tag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`alias` IN (?)", aliass).Find(&results).Error
-
-	return
-}
-
-// GetFromCategory 通过category获取内容
-func (obj *_TagMgr) GetFromCategory(category string) (results []*Tag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`category` = ?", category).Find(&results).Error
-
-	return
-}
-
-// GetBatchFromCategory 批量查找
-func (obj *_TagMgr) GetBatchFromCategory(categorys []string) (results []*Tag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Tag{}).Where("`category` IN (?)", categorys).Find(&results).Error
 
 	return
 }

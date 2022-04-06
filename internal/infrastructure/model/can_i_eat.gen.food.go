@@ -94,11 +94,6 @@ func (obj *_FoodMgr) WithAlias(alias string) Option {
 	return optionFunc(func(o *options) { o.query["alias"] = alias })
 }
 
-// WithCategory category获取
-func (obj *_FoodMgr) WithCategory(category string) Option {
-	return optionFunc(func(o *options) { o.query["category"] = category })
-}
-
 // GetByOption 功能选项模式获取
 func (obj *_FoodMgr) GetByOption(opts ...Option) (result Food, err error) {
 	options := options{
@@ -260,20 +255,6 @@ func (obj *_FoodMgr) GetFromAlias(alias string) (results []*Food, err error) {
 // GetBatchFromAlias 批量查找
 func (obj *_FoodMgr) GetBatchFromAlias(aliass []string) (results []*Food, err error) {
 	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`alias` IN (?)", aliass).Find(&results).Error
-
-	return
-}
-
-// GetFromCategory 通过category获取内容
-func (obj *_FoodMgr) GetFromCategory(category string) (results []*Food, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category` = ?", category).Find(&results).Error
-
-	return
-}
-
-// GetBatchFromCategory 批量查找
-func (obj *_FoodMgr) GetBatchFromCategory(categorys []string) (results []*Food, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(Food{}).Where("`category` IN (?)", categorys).Find(&results).Error
 
 	return
 }
