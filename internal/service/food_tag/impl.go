@@ -35,7 +35,7 @@ func (f foodTagServiceImpl) Update(foodTag *food_tag_domain.FoodTag) error {
 	return nil
 }
 
-func (f foodTagServiceImpl) ListForPage(size int64, page int64) (*food_tag_domain.ListResp, error) {
+func (f foodTagServiceImpl) List(size int64, page int64) (*food_tag_domain.ListResp, error) {
 	resp := new(food_tag_domain.ListResp)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	foodTagPage := model.NewPage(size, page)
@@ -57,7 +57,7 @@ func (f foodTagServiceImpl) ListForPage(size int64, page int64) (*food_tag_domai
 	return resp, nil
 }
 
-func (f foodTagServiceImpl) FoodDetail(id int64) (*food_tag_domain.FoodTag, error) {
+func (f foodTagServiceImpl) Detail(id int64) (*food_tag_domain.FoodTag, error) {
 	foodRepoList := make([]*model.FoodTag, 0)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error

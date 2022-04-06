@@ -5,9 +5,9 @@ import (
 )
 
 type GroupService interface {
-	ListForPage(size int64, page int64) (*group_domain.ListResp, error)
-	FoodDetail(id int64) (*group_domain.Group, error)
-	Create(food *group_domain.Group) (uint64, error)
-	Update(food *group_domain.Group) error
-	Delete(food *group_domain.Group) error
+	List(size int64, page int64) (*group_domain.ListResp, error)
+	Detail(id int64) (*group_domain.Group, error)
+	Create(t *group_domain.Group) (uint64, error)
+	Update(t *group_domain.Group) error
+	Delete(t *group_domain.Group) error
 }

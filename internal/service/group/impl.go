@@ -21,7 +21,7 @@ func (f groupServiceImpl) Delete(group *group_domain.Group) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %d", group.ID)
+	log.Infof("delete group success: %d", group.ID)
 	return nil
 }
 
@@ -31,11 +31,11 @@ func (f groupServiceImpl) Update(group *group_domain.Group) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %d", group.ID)
+	log.Infof("update group success: %d", group.ID)
 	return nil
 }
 
-func (f groupServiceImpl) ListForPage(size int64, page int64) (*group_domain.ListResp, error) {
+func (f groupServiceImpl) List(size int64, page int64) (*group_domain.ListResp, error) {
 	resp := new(group_domain.ListResp)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	groupPage := model.NewPage(size, page)
@@ -57,16 +57,16 @@ func (f groupServiceImpl) ListForPage(size int64, page int64) (*group_domain.Lis
 	return resp, nil
 }
 
-func (f groupServiceImpl) FoodDetail(id int64) (*group_domain.Group, error) {
-	foodRepoList := make([]*model.Group, 0)
+func (f groupServiceImpl) Detail(id int64) (*group_domain.Group, error) {
+	groupDaoList := make([]*model.Group, 0)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
-	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
+	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&groupDaoList).Error
 	if err != nil {
 		return nil, err
 	}
-	food := new(group_domain.Group)
-	_ = copier.Copy(&food, foodRepoList[0])
-	return food, nil
+	group := new(group_domain.Group)
+	_ = copier.Copy(&group, groupDaoList[0])
+	return group, nil
 }
 
 func (f groupServiceImpl) Create(group *group_domain.Group) (uint64, error) {
@@ -78,6 +78,6 @@ func (f groupServiceImpl) Create(group *group_domain.Group) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	log.Infof("create food success: %d", groupDao.ID)
+	log.Infof("create group success: %d", groupDao.ID)
 	return groupDao.ID, nil
 }

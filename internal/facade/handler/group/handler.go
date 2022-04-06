@@ -21,7 +21,7 @@ func handlerList(c echo.Context) error {
 		return err
 	}
 
-	resp, err := group_service.Impl.ListForPage(size, page)
+	resp, err := group_service.Impl.List(size, page)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func handlerDetail(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	group, err := group_service.Impl.FoodDetail(id)
+	group, err := group_service.Impl.Detail(id)
 	return c.JSON(http.StatusOK, group)
 }
 

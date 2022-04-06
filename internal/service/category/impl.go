@@ -21,7 +21,7 @@ func (f categoryServiceImpl) Delete(category *category_domain.Category) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %d", category.ID)
+	log.Infof("delete category success: %d", category.ID)
 	return nil
 }
 
@@ -31,11 +31,11 @@ func (f categoryServiceImpl) Update(category *category_domain.Category) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %d", category.ID)
+	log.Infof("update category success: %d", category.ID)
 	return nil
 }
 
-func (f categoryServiceImpl) ListForPage(size int64, page int64) (*category_domain.ListResp, error) {
+func (f categoryServiceImpl) List(size int64, page int64) (*category_domain.ListResp, error) {
 	resp := new(category_domain.ListResp)
 	categoryMgr := model.CategoryMgr(mysql_infrastructure.Get())
 	categoryPage := model.NewPage(size, page)
@@ -57,16 +57,16 @@ func (f categoryServiceImpl) ListForPage(size int64, page int64) (*category_doma
 	return resp, nil
 }
 
-func (f categoryServiceImpl) FoodDetail(id int64) (*category_domain.Category, error) {
-	foodRepoList := make([]*model.Category, 0)
+func (f categoryServiceImpl) Detail(id int64) (*category_domain.Category, error) {
+	categoryDaoList := make([]*model.Category, 0)
 	categoryMgr := model.CategoryMgr(mysql_infrastructure.Get())
-	err := categoryMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
+	err := categoryMgr.Where("id=?", id).Limit(1).Find(&categoryDaoList).Error
 	if err != nil {
 		return nil, err
 	}
-	food := new(category_domain.Category)
-	_ = copier.Copy(&food, foodRepoList[0])
-	return food, nil
+	category := new(category_domain.Category)
+	_ = copier.Copy(&category, categoryDaoList[0])
+	return category, nil
 }
 
 func (f categoryServiceImpl) Create(category *category_domain.Category) (uint64, error) {
@@ -78,6 +78,6 @@ func (f categoryServiceImpl) Create(category *category_domain.Category) (uint64,
 	if err != nil {
 		return 0, err
 	}
-	log.Infof("create food success: %d", categoryDao.ID)
+	log.Infof("create category success: %d", categoryDao.ID)
 	return categoryDao.ID, nil
 }

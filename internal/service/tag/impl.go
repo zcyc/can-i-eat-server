@@ -21,7 +21,7 @@ func (f tagServiceImpl) Delete(tag *tag_domain.Tag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %d", tag.ID)
+	log.Infof("delete tag success: %d", tag.ID)
 	return nil
 }
 
@@ -31,11 +31,11 @@ func (f tagServiceImpl) Update(tag *tag_domain.Tag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %d", tag.ID)
+	log.Infof("update tag success: %d", tag.ID)
 	return nil
 }
 
-func (f tagServiceImpl) ListForPage(size int64, page int64) (*tag_domain.ListResp, error) {
+func (f tagServiceImpl) List(size int64, page int64) (*tag_domain.ListResp, error) {
 	resp := new(tag_domain.ListResp)
 	tagMgr := model.TagMgr(mysql_infrastructure.Get())
 	tagPage := model.NewPage(size, page)
@@ -57,16 +57,16 @@ func (f tagServiceImpl) ListForPage(size int64, page int64) (*tag_domain.ListRes
 	return resp, nil
 }
 
-func (f tagServiceImpl) FoodDetail(id int64) (*tag_domain.Tag, error) {
-	foodRepoList := make([]*model.Tag, 0)
+func (f tagServiceImpl) Detail(id int64) (*tag_domain.Tag, error) {
+	tagDaoList := make([]*model.Tag, 0)
 	tagMgr := model.TagMgr(mysql_infrastructure.Get())
-	err := tagMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
+	err := tagMgr.Where("id=?", id).Limit(1).Find(&tagDaoList).Error
 	if err != nil {
 		return nil, err
 	}
-	food := new(tag_domain.Tag)
-	_ = copier.Copy(&food, foodRepoList[0])
-	return food, nil
+	tag := new(tag_domain.Tag)
+	_ = copier.Copy(&tag, tagDaoList[0])
+	return tag, nil
 }
 
 func (f tagServiceImpl) Create(tag *tag_domain.Tag) (uint64, error) {
@@ -78,6 +78,6 @@ func (f tagServiceImpl) Create(tag *tag_domain.Tag) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	log.Infof("create food success: %d", tagDao.ID)
+	log.Infof("create tag success: %d", tagDao.ID)
 	return tagDao.ID, nil
 }

@@ -21,7 +21,7 @@ func (f consumerGroupServiceImpl) Delete(consumerGroup *consumer_group_domain.Co
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %d", consumerGroup.ID)
+	log.Infof("delete consumerGroup success: %d", consumerGroup.ID)
 	return nil
 }
 
@@ -31,11 +31,11 @@ func (f consumerGroupServiceImpl) Update(consumerGroup *consumer_group_domain.Co
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %d", consumerGroup.ID)
+	log.Infof("update consumerGroup success: %d", consumerGroup.ID)
 	return nil
 }
 
-func (f consumerGroupServiceImpl) ListForPage(size int64, page int64) (*consumer_group_domain.ListResp, error) {
+func (f consumerGroupServiceImpl) List(size int64, page int64) (*consumer_group_domain.ListResp, error) {
 	resp := new(consumer_group_domain.ListResp)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
 	consumerGroupPage := model.NewPage(size, page)
@@ -57,16 +57,16 @@ func (f consumerGroupServiceImpl) ListForPage(size int64, page int64) (*consumer
 	return resp, nil
 }
 
-func (f consumerGroupServiceImpl) FoodDetail(id int64) (*consumer_group_domain.ConsumerGroup, error) {
-	foodRepoList := make([]*model.ConsumerGroup, 0)
+func (f consumerGroupServiceImpl) Detail(id int64) (*consumer_group_domain.ConsumerGroup, error) {
+	consumerGroupDaoList := make([]*model.ConsumerGroup, 0)
 	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
-	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
+	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&consumerGroupDaoList).Error
 	if err != nil {
 		return nil, err
 	}
-	food := new(consumer_group_domain.ConsumerGroup)
-	_ = copier.Copy(&food, foodRepoList[0])
-	return food, nil
+	consumerGroup := new(consumer_group_domain.ConsumerGroup)
+	_ = copier.Copy(&consumerGroup, consumerGroupDaoList[0])
+	return consumerGroup, nil
 }
 
 func (f consumerGroupServiceImpl) Create(consumerGroup *consumer_group_domain.ConsumerGroup) (uint64, error) {
@@ -78,6 +78,6 @@ func (f consumerGroupServiceImpl) Create(consumerGroup *consumer_group_domain.Co
 	if err != nil {
 		return 0, err
 	}
-	log.Infof("create food success: %d", consumerGroupDao.ID)
+	log.Infof("create consumerGroup success: %d", consumerGroupDao.ID)
 	return consumerGroupDao.ID, nil
 }

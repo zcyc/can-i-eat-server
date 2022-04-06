@@ -35,7 +35,7 @@ func (f foodServiceImpl) Update(food *food_domain.Food) error {
 	return nil
 }
 
-func (f foodServiceImpl) ListForPage(size int64, page int64) (*food_domain.ListResp, error) {
+func (f foodServiceImpl) List(size int64, page int64) (*food_domain.ListResp, error) {
 	resp := new(food_domain.ListResp)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	foodPage := model.NewPage(size, page)
@@ -57,7 +57,7 @@ func (f foodServiceImpl) ListForPage(size int64, page int64) (*food_domain.ListR
 	return resp, nil
 }
 
-func (f foodServiceImpl) FoodDetail(id int64) (*food_domain.Food, error) {
+func (f foodServiceImpl) Detail(id int64) (*food_domain.Food, error) {
 	foodRepoList := make([]*model.Food, 0)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	err := foodMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error

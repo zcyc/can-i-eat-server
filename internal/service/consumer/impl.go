@@ -21,7 +21,7 @@ func (f consumerServiceImpl) Delete(consumer *consumer_domain.Consumer) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %d", consumer.ID)
+	log.Infof("delete consumer success: %d", consumer.ID)
 	return nil
 }
 
@@ -31,15 +31,15 @@ func (f consumerServiceImpl) Update(consumer *consumer_domain.Consumer) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %d", consumer.ID)
+	log.Infof("update consumer success: %d", consumer.ID)
 	return nil
 }
 
-func (f consumerServiceImpl) ListForPage(size int64, page int64) (*consumer_domain.ListResp, error) {
+func (f consumerServiceImpl) List(size int64, page int64) (*consumer_domain.ListResp, error) {
 	resp := new(consumer_domain.ListResp)
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
-	foodPage := model.NewPage(size, page)
-	result, err := consumerMgr.SelectPage(foodPage, consumerMgr.WithFlag(constant.Normal), consumerMgr.WithActive(constant.Activated))
+	consumerPage := model.NewPage(size, page)
+	result, err := consumerMgr.SelectPage(consumerPage, consumerMgr.WithFlag(constant.Normal), consumerMgr.WithActive(constant.Activated))
 	if err != nil {
 		return nil, err
 	}
@@ -57,16 +57,16 @@ func (f consumerServiceImpl) ListForPage(size int64, page int64) (*consumer_doma
 	return resp, nil
 }
 
-func (f consumerServiceImpl) FoodDetail(id int64) (*consumer_domain.Consumer, error) {
-	foodRepoList := make([]*model.Consumer, 0)
+func (f consumerServiceImpl) Detail(id int64) (*consumer_domain.Consumer, error) {
+	consumerDaoList := make([]*model.Consumer, 0)
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
-	err := consumerMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
+	err := consumerMgr.Where("id=?", id).Limit(1).Find(&consumerDaoList).Error
 	if err != nil {
 		return nil, err
 	}
-	food := new(consumer_domain.Consumer)
-	_ = copier.Copy(&food, foodRepoList[0])
-	return food, nil
+	consumer := new(consumer_domain.Consumer)
+	_ = copier.Copy(&consumer, consumerDaoList[0])
+	return consumer, nil
 }
 
 func (f consumerServiceImpl) Create(consumer *consumer_domain.Consumer) (uint64, error) {
@@ -78,6 +78,6 @@ func (f consumerServiceImpl) Create(consumer *consumer_domain.Consumer) (uint64,
 	if err != nil {
 		return 0, err
 	}
-	log.Infof("create food success: %d", consumerDao.ID)
+	log.Infof("create consumer success: %d", consumerDao.ID)
 	return consumerDao.ID, nil
 }
