@@ -33,8 +33,8 @@ func (f groupServiceImpl) ListByIDs(id []int64) ([]*group_domain.Group, error) {
 }
 
 func (f groupServiceImpl) Delete(group *group_domain.Group) error {
-	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
-	err := consumerGroupMgr.Update("flag", constant.Deleted).Where("id=?", group.ID).Error
+	groupMgr := model.GroupMgr(mysql_infrastructure.Get())
+	err := groupMgr.Update("flag", constant.Deleted).Where("id=?", group.ID).Error
 	if err != nil {
 		return err
 	}
@@ -43,8 +43,8 @@ func (f groupServiceImpl) Delete(group *group_domain.Group) error {
 }
 
 func (f groupServiceImpl) Update(group *group_domain.Group) error {
-	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
-	err := consumerGroupMgr.Save(group).Error
+	groupMgr := model.GroupMgr(mysql_infrastructure.Get())
+	err := groupMgr.Save(group).Error
 	if err != nil {
 		return err
 	}
@@ -54,9 +54,9 @@ func (f groupServiceImpl) Update(group *group_domain.Group) error {
 
 func (f groupServiceImpl) List(size int64, page int64) (*group_domain.ListResp, error) {
 	resp := new(group_domain.ListResp)
-	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
+	groupMgr := model.GroupMgr(mysql_infrastructure.Get())
 	groupPage := model.NewPage(size, page)
-	result, err := consumerGroupMgr.SelectPage(groupPage, consumerGroupMgr.WithFlag(constant.Normal), consumerGroupMgr.WithActive(constant.Activated))
+	result, err := groupMgr.SelectPage(groupPage, groupMgr.WithFlag(constant.Normal), groupMgr.WithActive(constant.Activated))
 	if err != nil {
 		return nil, err
 	}
@@ -76,8 +76,8 @@ func (f groupServiceImpl) List(size int64, page int64) (*group_domain.ListResp, 
 
 func (f groupServiceImpl) Detail(id int64) (*group_domain.Group, error) {
 	groupDaoList := make([]*model.Group, 0)
-	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
-	err := consumerGroupMgr.Where("id=?", id).Limit(1).Find(&groupDaoList).Error
+	groupMgr := model.GroupMgr(mysql_infrastructure.Get())
+	err := groupMgr.Where("id=?", id).Limit(1).Find(&groupDaoList).Error
 	if err != nil {
 		return nil, err
 	}
@@ -90,8 +90,8 @@ func (f groupServiceImpl) Create(t *group_domain.Group) (string, error) {
 	groupDao := new(model.Group)
 	_ = copier.Copy(groupDao, t)
 	groupDao.ID = strings.Join(pinyin.LazyConvert(groupDao.Name, nil), "_")
-	consumerGroupMgr := model.ConsumerGroupMgr(mysql_infrastructure.Get())
-	err := consumerGroupMgr.Omit("create_time", "update_time").Create(groupDao).Error
+	groupMgr := model.GroupMgr(mysql_infrastructure.Get())
+	err := groupMgr.Omit("create_time", "update_time").Create(groupDao).Error
 	if err != nil {
 		return "", err
 	}
