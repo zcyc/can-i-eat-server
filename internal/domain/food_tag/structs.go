@@ -13,11 +13,11 @@ type ListResp struct {
 
 // FoodTag [...]
 type FoodTag struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
-	FoodID     string    `gorm:"column:food_id" json:"foodId"`
-	TagID      string    `gorm:"column:tag_id" json:"tagId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	Name       string    `gorm:"column:name" json:"name"`
+	ParentID   string    `gorm:"column:parent_id" json:"parentId"`
 }

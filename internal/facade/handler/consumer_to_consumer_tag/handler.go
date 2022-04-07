@@ -1,10 +1,9 @@
-package food_facade
+package consumer_to_consumer_tag_facade
 
 import (
 	string_util "can-i-eat/common/util/string"
-	consumer_tag_to_food_tag_application "can-i-eat/internal/application/group_food"
-	food_domain "can-i-eat/internal/domain/food"
-	food_service "can-i-eat/internal/service/food"
+	consumer_to_consumer_tag_domain "can-i-eat/internal/domain/consumer_to_consumer_tag"
+	consumer_to_consumer_tag_service "can-i-eat/internal/service/consumer_to_consumer_tag"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -23,7 +22,7 @@ func handlerList(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	resp, err := food_service.Impl.List(size, page)
+	resp, err := consumer_to_consumer_tag_service.Impl.List(size, page)
 	if err != nil {
 		return err
 	}
@@ -35,16 +34,16 @@ func handlerDetail(c echo.Context) error {
 	if id == "" {
 		return errors.New("参数错误")
 	}
-	food, _ := food_service.Impl.Detail(id)
-	return c.JSON(http.StatusOK, food)
+	consumerToConsumerTag, _ := consumer_to_consumer_tag_service.Impl.Detail(id)
+	return c.JSON(http.StatusOK, consumerToConsumerTag)
 }
 
 func handlerCreate(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	consumerToConsumerTag := new(consumer_to_consumer_tag_domain.ConsumerToConsumerTag)
+	if err := c.Bind(consumerToConsumerTag); err != nil {
 		return err
 	}
-	id, err := food_service.Impl.Create(food)
+	id, err := consumer_to_consumer_tag_service.Impl.Create(consumerToConsumerTag)
 	if err != nil {
 		return c.String(http.StatusOK, "创建失败")
 	}
@@ -52,11 +51,11 @@ func handlerCreate(c echo.Context) error {
 }
 
 func handlerUpdate(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	consumerToConsumerTag := new(consumer_to_consumer_tag_domain.ConsumerToConsumerTag)
+	if err := c.Bind(consumerToConsumerTag); err != nil {
 		return err
 	}
-	err := food_service.Impl.Update(food)
+	err := consumer_to_consumer_tag_service.Impl.Update(consumerToConsumerTag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}
@@ -64,29 +63,13 @@ func handlerUpdate(c echo.Context) error {
 }
 
 func handlerDelete(c echo.Context) error {
-	food := new(food_domain.Food)
-	if err := c.Bind(food); err != nil {
+	consumerToConsumerTag := new(consumer_to_consumer_tag_domain.ConsumerToConsumerTag)
+	if err := c.Bind(consumerToConsumerTag); err != nil {
 		return err
 	}
-	err := food_service.Impl.Delete(food)
+	err := consumer_to_consumer_tag_service.Impl.Delete(consumerToConsumerTag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}
 	return c.JSON(http.StatusOK, "更新成功")
-}
-
-func handlerListByConsumerTag(c echo.Context) error {
-	list, err := consumer_tag_to_food_tag_application.Impl.ListFoodByConsumerTag(c)
-	if err != nil {
-		return nil
-	}
-	return c.JSON(http.StatusOK, list)
-}
-
-func handlerListByConsumer(c echo.Context) error {
-	list, err := consumer_tag_to_food_tag_application.Impl.ListFoodByConsumer(c)
-	if err != nil {
-		return nil
-	}
-	return c.JSON(http.StatusOK, list)
 }

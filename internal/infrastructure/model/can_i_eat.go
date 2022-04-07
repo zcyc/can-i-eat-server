@@ -6,11 +6,11 @@ import (
 
 // Consumer [...]
 type Consumer struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	Account    string    `gorm:"column:account" json:"account"`
 	Password   string    `gorm:"column:password" json:"password"`
@@ -42,48 +42,118 @@ var ConsumerColumns = struct {
 	Password:   "password",
 }
 
-// ConsumerGroup [...]
-type ConsumerGroup struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
+// ConsumerTag [...]
+type ConsumerTag struct {
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
-	ConsumerID string    `gorm:"column:consumer_id" json:"consumerId"`
-	GroupID    string    `gorm:"column:group_id" json:"groupId"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	Name       string    `gorm:"column:name" json:"name"`
 }
 
 // TableName get sql table name.获取数据库表名
-func (m *ConsumerGroup) TableName() string {
-	return "consumer_group"
+func (m *ConsumerTag) TableName() string {
+	return "consumer_tag"
 }
 
-// ConsumerGroupColumns get sql column name.获取数据库列名
-var ConsumerGroupColumns = struct {
+// ConsumerTagColumns get sql column name.获取数据库列名
+var ConsumerTagColumns = struct {
 	Active     string
 	Flag       string
 	CreateTime string
 	UpdateTime string
 	ID         string
-	ConsumerID string
-	GroupID    string
+	Name       string
 }{
 	Active:     "active",
 	Flag:       "flag",
 	CreateTime: "create_time",
 	UpdateTime: "update_time",
 	ID:         "id",
-	ConsumerID: "consumer_id",
-	GroupID:    "group_id",
+	Name:       "name",
+}
+
+// ConsumerTagToFoodTag [...]
+type ConsumerTagToFoodTag struct {
+	Active        int8      `gorm:"column:active" json:"active"`
+	Flag          int8      `gorm:"column:flag" json:"flag"`
+	CreateTime    time.Time `gorm:"column:create_time" json:"createTime"`
+	UpdateTime    time.Time `gorm:"column:update_time" json:"updateTime"`
+	ID            string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ConsumerTagID string    `gorm:"column:consumer_tag_id" json:"consumerTagId"`
+	FoodTagID     string    `gorm:"column:food_tag_id" json:"foodTagId"`
+	EatMode       string    `gorm:"column:eat_mode" json:"eatMode"`
+}
+
+// TableName get sql table name.获取数据库表名
+func (m *ConsumerTagToFoodTag) TableName() string {
+	return "consumer_tag_to_food_tag"
+}
+
+// ConsumerTagToFoodTagColumns get sql column name.获取数据库列名
+var ConsumerTagToFoodTagColumns = struct {
+	Active        string
+	Flag          string
+	CreateTime    string
+	UpdateTime    string
+	ID            string
+	ConsumerTagID string
+	FoodTagID     string
+	EatMode       string
+}{
+	Active:        "active",
+	Flag:          "flag",
+	CreateTime:    "create_time",
+	UpdateTime:    "update_time",
+	ID:            "id",
+	ConsumerTagID: "consumer_tag_id",
+	FoodTagID:     "food_tag_id",
+	EatMode:       "eat_mode",
+}
+
+// ConsumerToConsumerTag [...]
+type ConsumerToConsumerTag struct {
+	Active        int8      `gorm:"column:active" json:"active"`
+	Flag          int8      `gorm:"column:flag" json:"flag"`
+	CreateTime    time.Time `gorm:"column:create_time" json:"createTime"`
+	UpdateTime    time.Time `gorm:"column:update_time" json:"updateTime"`
+	ID            string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	ConsumerID    string    `gorm:"column:consumer_id" json:"consumerId"`
+	ConsumerTagID string    `gorm:"column:consumer_tag_id" json:"consumerTagId"`
+}
+
+// TableName get sql table name.获取数据库表名
+func (m *ConsumerToConsumerTag) TableName() string {
+	return "consumer_to_consumer_tag"
+}
+
+// ConsumerToConsumerTagColumns get sql column name.获取数据库列名
+var ConsumerToConsumerTagColumns = struct {
+	Active        string
+	Flag          string
+	CreateTime    string
+	UpdateTime    string
+	ID            string
+	ConsumerID    string
+	ConsumerTagID string
+}{
+	Active:        "active",
+	Flag:          "flag",
+	CreateTime:    "create_time",
+	UpdateTime:    "update_time",
+	ID:            "id",
+	ConsumerID:    "consumer_id",
+	ConsumerTagID: "consumer_tag_id",
 }
 
 // Food [...]
 type Food struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	Alias      string    `gorm:"column:alias" json:"alias"`
 }
@@ -114,127 +184,22 @@ var FoodColumns = struct {
 
 // FoodTag [...]
 type FoodTag struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
 	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
 	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
-	FoodID     string    `gorm:"column:food_id" json:"foodId"`
-	TagID      string    `gorm:"column:tag_id" json:"tagId"`
-}
-
-// TableName get sql table name.获取数据库表名
-func (m *FoodTag) TableName() string {
-	return "food_tag"
-}
-
-// FoodTagColumns get sql column name.获取数据库列名
-var FoodTagColumns = struct {
-	Active     string
-	Flag       string
-	CreateTime string
-	UpdateTime string
-	ID         string
-	FoodID     string
-	TagID      string
-}{
-	Active:     "active",
-	Flag:       "flag",
-	CreateTime: "create_time",
-	UpdateTime: "update_time",
-	ID:         "id",
-	FoodID:     "food_id",
-	TagID:      "tag_id",
-}
-
-// Group [...]
-type Group struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
-	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
-	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
-	Name       string    `gorm:"column:name" json:"name"`
-}
-
-// TableName get sql table name.获取数据库表名
-func (m *Group) TableName() string {
-	return "group"
-}
-
-// GroupColumns get sql column name.获取数据库列名
-var GroupColumns = struct {
-	Active     string
-	Flag       string
-	CreateTime string
-	UpdateTime string
-	ID         string
-	Name       string
-}{
-	Active:     "active",
-	Flag:       "flag",
-	CreateTime: "create_time",
-	UpdateTime: "update_time",
-	ID:         "id",
-	Name:       "name",
-}
-
-// GroupTag [...]
-type GroupTag struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
-	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
-	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
-	GroupID    string    `gorm:"column:group_id" json:"groupId"`
-	TagID      string    `gorm:"column:tag_id" json:"tagId"`
-	Type       string    `gorm:"column:type" json:"type"`
-}
-
-// TableName get sql table name.获取数据库表名
-func (m *GroupTag) TableName() string {
-	return "group_tag"
-}
-
-// GroupTagColumns get sql column name.获取数据库列名
-var GroupTagColumns = struct {
-	Active     string
-	Flag       string
-	CreateTime string
-	UpdateTime string
-	ID         string
-	GroupID    string
-	TagID      string
-	Type       string
-}{
-	Active:     "active",
-	Flag:       "flag",
-	CreateTime: "create_time",
-	UpdateTime: "update_time",
-	ID:         "id",
-	GroupID:    "group_id",
-	TagID:      "tag_id",
-	Type:       "type",
-}
-
-// Tag [...]
-type Tag struct {
-	Active     int8      `gorm:"column:active;default:1" json:"active"`
-	Flag       int8      `gorm:"column:flag;default:0" json:"flag"`
-	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
-	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
-	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
 	Name       string    `gorm:"column:name" json:"name"`
 	ParentID   string    `gorm:"column:parent_id" json:"parentId"`
 }
 
 // TableName get sql table name.获取数据库表名
-func (m *Tag) TableName() string {
-	return "tag"
+func (m *FoodTag) TableName() string {
+	return "food_to_food_tag"
 }
 
-// TagColumns get sql column name.获取数据库列名
-var TagColumns = struct {
+// FoodTagColumns get sql column name.获取数据库列名
+var FoodTagColumns = struct {
 	Active     string
 	Flag       string
 	CreateTime string
@@ -250,4 +215,39 @@ var TagColumns = struct {
 	ID:         "id",
 	Name:       "name",
 	ParentID:   "parent_id",
+}
+
+// FoodToFoodTag [...]
+type FoodToFoodTag struct {
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
+	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
+	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
+	ID         string    `gorm:"primaryKey;column:id" json:"-"` // 主键
+	FoodID     string    `gorm:"column:food_id" json:"foodId"`
+	FoodTagID  string    `gorm:"column:food_tag_id" json:"foodTagId"`
+}
+
+// TableName get sql table name.获取数据库表名
+func (m *FoodToFoodTag) TableName() string {
+	return "food_to_food_tag"
+}
+
+// FoodToFoodTagColumns get sql column name.获取数据库列名
+var FoodToFoodTagColumns = struct {
+	Active     string
+	Flag       string
+	CreateTime string
+	UpdateTime string
+	ID         string
+	FoodID     string
+	FoodTagID  string
+}{
+	Active:     "active",
+	Flag:       "flag",
+	CreateTime: "create_time",
+	UpdateTime: "update_time",
+	ID:         "id",
+	FoodID:     "food_id",
+	FoodTagID:  "food_tag_id",
 }

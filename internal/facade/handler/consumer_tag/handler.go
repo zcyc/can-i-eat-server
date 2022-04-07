@@ -1,9 +1,9 @@
-package food_tag_facade
+package consumer_tag_facade
 
 import (
 	string_util "can-i-eat/common/util/string"
-	food_tag_domain "can-i-eat/internal/domain/food_tag"
-	food_tag_service "can-i-eat/internal/service/food_tag"
+	consumer_tag_domain "can-i-eat/internal/domain/consumer_tag"
+	consumer_tag_service "can-i-eat/internal/service/consumer_tag"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,7 +21,7 @@ func handlerList(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	resp, err := food_tag_service.Impl.List(size, page)
+	resp, err := consumer_tag_service.Impl.List(size, page)
 	if err != nil {
 		return err
 	}
@@ -34,16 +34,16 @@ func handlerDetail(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	tag, err := food_tag_service.Impl.Detail(id)
-	return c.JSON(http.StatusOK, tag)
+	consumerTag, err := consumer_tag_service.Impl.Detail(id)
+	return c.JSON(http.StatusOK, consumerTag)
 }
 
 func handlerCreate(c echo.Context) error {
-	tag := new(food_tag_domain.FoodTag)
-	if err := c.Bind(tag); err != nil {
+	consumerTag := new(consumer_tag_domain.ConsumerTag)
+	if err := c.Bind(consumerTag); err != nil {
 		return err
 	}
-	id, err := food_tag_service.Impl.Create(tag)
+	id, err := consumer_tag_service.Impl.Create(consumerTag)
 	if err != nil {
 		return c.String(http.StatusOK, "创建失败")
 	}
@@ -51,11 +51,11 @@ func handlerCreate(c echo.Context) error {
 }
 
 func handlerUpdate(c echo.Context) error {
-	tag := new(food_tag_domain.FoodTag)
-	if err := c.Bind(tag); err != nil {
+	consumerTag := new(consumer_tag_domain.ConsumerTag)
+	if err := c.Bind(consumerTag); err != nil {
 		return err
 	}
-	err := food_tag_service.Impl.Update(tag)
+	err := consumer_tag_service.Impl.Update(consumerTag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}
@@ -63,11 +63,11 @@ func handlerUpdate(c echo.Context) error {
 }
 
 func handlerDelete(c echo.Context) error {
-	tag := new(food_tag_domain.FoodTag)
-	if err := c.Bind(tag); err != nil {
+	consumerTag := new(consumer_tag_domain.ConsumerTag)
+	if err := c.Bind(consumerTag); err != nil {
 		return err
 	}
-	err := food_tag_service.Impl.Delete(tag)
+	err := consumer_tag_service.Impl.Delete(consumerTag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}

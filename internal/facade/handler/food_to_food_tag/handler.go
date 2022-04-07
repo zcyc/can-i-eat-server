@@ -1,9 +1,10 @@
-package food_tag_facade
+package food_to_food_tag_facade
 
 import (
 	string_util "can-i-eat/common/util/string"
-	food_tag_domain "can-i-eat/internal/domain/food_tag"
-	food_tag_service "can-i-eat/internal/service/food_tag"
+	food_to_food_tag_domain "can-i-eat/internal/domain/food_to_food_tag"
+	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
+	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,7 +22,7 @@ func handlerList(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	resp, err := food_tag_service.Impl.List(size, page)
+	resp, err := food_to_food_tag_service.Impl.List(size, page)
 	if err != nil {
 		return err
 	}
@@ -29,21 +30,20 @@ func handlerList(c echo.Context) error {
 }
 
 func handlerDetail(c echo.Context) error {
-	idStr := c.QueryParam("id")
-	id, err := string_util.StringToInt64(idStr)
-	if err != nil {
-		return err
+	id := c.QueryParam("id")
+	if id == "" {
+		return errors.New("参数错误")
 	}
-	tag, err := food_tag_service.Impl.Detail(id)
-	return c.JSON(http.StatusOK, tag)
+	foodToFoodTag, _ := food_to_food_tag_service.Impl.Detail(id)
+	return c.JSON(http.StatusOK, foodToFoodTag)
 }
 
 func handlerCreate(c echo.Context) error {
-	tag := new(food_tag_domain.FoodTag)
-	if err := c.Bind(tag); err != nil {
+	foodToFoodTag := new(food_to_food_tag_domain.FoodToFoodTag)
+	if err := c.Bind(foodToFoodTag); err != nil {
 		return err
 	}
-	id, err := food_tag_service.Impl.Create(tag)
+	id, err := food_to_food_tag_service.Impl.Create(foodToFoodTag)
 	if err != nil {
 		return c.String(http.StatusOK, "创建失败")
 	}
@@ -51,11 +51,11 @@ func handlerCreate(c echo.Context) error {
 }
 
 func handlerUpdate(c echo.Context) error {
-	tag := new(food_tag_domain.FoodTag)
-	if err := c.Bind(tag); err != nil {
+	foodToFoodTag := new(food_to_food_tag_domain.FoodToFoodTag)
+	if err := c.Bind(foodToFoodTag); err != nil {
 		return err
 	}
-	err := food_tag_service.Impl.Update(tag)
+	err := food_to_food_tag_service.Impl.Update(foodToFoodTag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}
@@ -63,11 +63,11 @@ func handlerUpdate(c echo.Context) error {
 }
 
 func handlerDelete(c echo.Context) error {
-	tag := new(food_tag_domain.FoodTag)
-	if err := c.Bind(tag); err != nil {
+	foodToFoodTag := new(food_to_food_tag_domain.FoodToFoodTag)
+	if err := c.Bind(foodToFoodTag); err != nil {
 		return err
 	}
-	err := food_tag_service.Impl.Delete(tag)
+	err := food_to_food_tag_service.Impl.Delete(foodToFoodTag)
 	if err != nil {
 		return c.String(http.StatusOK, "更新失败")
 	}

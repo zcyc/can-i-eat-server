@@ -2,11 +2,12 @@ package main
 
 import (
 	consumer_facade "can-i-eat/internal/facade/handler/consumer"
-	consumer_group_facade "can-i-eat/internal/facade/handler/consumer_group"
+	consumer_tag_facade "can-i-eat/internal/facade/handler/consumer_tag"
+	consumer_tag_to_food_tag_facade "can-i-eat/internal/facade/handler/consumer_tag_to_food_tag"
+	consumer_to_consumer_tag_facade "can-i-eat/internal/facade/handler/consumer_to_consumer_tag"
 	food_facade "can-i-eat/internal/facade/handler/food"
 	food_tag_facade "can-i-eat/internal/facade/handler/food_tag"
-	group_facade "can-i-eat/internal/facade/handler/group"
-	tag_facade "can-i-eat/internal/facade/handler/tag"
+	food_to_food_tag_facade "can-i-eat/internal/facade/handler/food_to_food_tag"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	redis_infrastructure "can-i-eat/internal/infrastructure/redis"
 	"github.com/labstack/echo/v4"
@@ -29,11 +30,12 @@ func main() {
 // initFacade 初始化路由
 func initFacade(e *echo.Echo) {
 	food_facade.RegisterHandlers(e)
-	tag_facade.RegisterHandlers(e)
 	food_tag_facade.RegisterHandlers(e)
+	food_to_food_tag_facade.RegisterHandlers(e)
 	consumer_facade.RegisterHandlers(e)
-	group_facade.RegisterHandlers(e)
-	consumer_group_facade.RegisterHandlers(e)
+	consumer_tag_facade.RegisterHandlers(e)
+	consumer_to_consumer_tag_facade.RegisterHandlers(e)
+	consumer_tag_to_food_tag_facade.RegisterHandlers(e)
 }
 
 // initInfrastructure 初始化基础设施

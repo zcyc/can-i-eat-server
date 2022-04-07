@@ -17,12 +17,12 @@ func FoodTagMgr(db *gorm.DB) *_FoodTagMgr {
 		panic(fmt.Errorf("FoodTagMgr need init by db"))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	return &_FoodTagMgr{_BaseMgr: &_BaseMgr{DB: db.Table("food_tag"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
+	return &_FoodTagMgr{_BaseMgr: &_BaseMgr{DB: db.Table("food_to_food_tag"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
 // GetTableName get sql table name.获取数据库名字
 func (obj *_FoodTagMgr) GetTableName() string {
-	return "food_tag"
+	return "food_to_food_tag"
 }
 
 // Reset 重置gorm会话
@@ -79,14 +79,14 @@ func (obj *_FoodTagMgr) WithID(id string) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
 }
 
-// WithFoodID food_id获取
-func (obj *_FoodTagMgr) WithFoodID(foodID string) Option {
-	return optionFunc(func(o *options) { o.query["food_id"] = foodID })
+// WithName name获取
+func (obj *_FoodTagMgr) WithName(name string) Option {
+	return optionFunc(func(o *options) { o.query["name"] = name })
 }
 
-// WithTagID tag_id获取
-func (obj *_FoodTagMgr) WithTagID(tagID string) Option {
-	return optionFunc(func(o *options) { o.query["tag_id"] = tagID })
+// WithParentID parent_id获取
+func (obj *_FoodTagMgr) WithParentID(parentID string) Option {
+	return optionFunc(func(o *options) { o.query["parent_id"] = parentID })
 }
 
 // GetByOption 功能选项模式获取
@@ -212,30 +212,30 @@ func (obj *_FoodTagMgr) GetBatchFromID(ids []string) (results []*FoodTag, err er
 	return
 }
 
-// GetFromFoodID 通过food_id获取内容
-func (obj *_FoodTagMgr) GetFromFoodID(foodID string) (results []*FoodTag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`food_id` = ?", foodID).Find(&results).Error
+// GetFromName 通过name获取内容
+func (obj *_FoodTagMgr) GetFromName(name string) (results []*FoodTag, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`name` = ?", name).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromFoodID 批量查找
-func (obj *_FoodTagMgr) GetBatchFromFoodID(foodIDs []string) (results []*FoodTag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`food_id` IN (?)", foodIDs).Find(&results).Error
+// GetBatchFromName 批量查找
+func (obj *_FoodTagMgr) GetBatchFromName(names []string) (results []*FoodTag, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`name` IN (?)", names).Find(&results).Error
 
 	return
 }
 
-// GetFromTagID 通过tag_id获取内容
-func (obj *_FoodTagMgr) GetFromTagID(tagID string) (results []*FoodTag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`tag_id` = ?", tagID).Find(&results).Error
+// GetFromParentID 通过parent_id获取内容
+func (obj *_FoodTagMgr) GetFromParentID(parentID string) (results []*FoodTag, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`parent_id` = ?", parentID).Find(&results).Error
 
 	return
 }
 
-// GetBatchFromTagID 批量查找
-func (obj *_FoodTagMgr) GetBatchFromTagID(tagIDs []string) (results []*FoodTag, err error) {
-	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`tag_id` IN (?)", tagIDs).Find(&results).Error
+// GetBatchFromParentID 批量查找
+func (obj *_FoodTagMgr) GetBatchFromParentID(parentIDs []string) (results []*FoodTag, err error) {
+	err = obj.DB.WithContext(obj.ctx).Model(FoodTag{}).Where("`parent_id` IN (?)", parentIDs).Find(&results).Error
 
 	return
 }

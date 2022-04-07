@@ -1,6 +1,6 @@
 package food_tag_repo
 
-var Impl FoodTagService = &foodTagImpl{}
+var Impl FoodTagRepo = &foodTagRepoImpl{}
 
-type foodTagImpl struct {
+type foodTagRepoImpl struct {
 }

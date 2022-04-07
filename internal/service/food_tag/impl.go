@@ -7,28 +7,13 @@ import (
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
+	"github.com/mozillazg/go-pinyin"
+	"strings"
 )
 
 var Impl FoodTagService = &foodTagServiceImpl{}
 
 type foodTagServiceImpl struct {
-}
-
-func (f foodTagServiceImpl) ListByTagList(ids []string) ([]*food_tag_domain.FoodTag, error) {
-	foodTagDaoList := make([]*model.FoodTag, 0)
-	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
-	err := foodTagMgr.Where("tag_id in ?", ids).Find(&foodTagDaoList).Error
-	if err != nil {
-		return nil, err
-	}
-	foodTagList := make([]*food_tag_domain.FoodTag, 0)
-	for _, foodTagRepo := range foodTagDaoList {
-		foodTag := new(food_tag_domain.FoodTag)
-		_ = copier.Copy(&foodTag, &foodTagRepo)
-		foodTagList = append(foodTagList, foodTag)
-	}
-
-	return foodTagList, nil
 }
 
 func (f foodTagServiceImpl) Delete(foodTag *food_tag_domain.FoodTag) error {
@@ -37,7 +22,7 @@ func (f foodTagServiceImpl) Delete(foodTag *food_tag_domain.FoodTag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("delete food success: %s", foodTag.ID)
+	log.Infof("delete food_to_food_tag success: %s", foodTag.ID)
 	return nil
 }
 
@@ -47,7 +32,7 @@ func (f foodTagServiceImpl) Update(foodTag *food_tag_domain.FoodTag) error {
 	if err != nil {
 		return err
 	}
-	log.Infof("update food success: %s", foodTag.ID)
+	log.Infof("update food_to_food_tag success: %s", foodTag.ID)
 	return nil
 }
 
@@ -60,10 +45,10 @@ func (f foodTagServiceImpl) List(size int64, page int64) (*food_tag_domain.ListR
 		return nil, err
 	}
 	foodTagList := make([]*food_tag_domain.FoodTag, 0)
-	for _, foodTagRepo := range result.GetRecords().([]model.FoodTag) {
-		foodTag := new(food_tag_domain.FoodTag)
-		_ = copier.Copy(&foodTag, &foodTagRepo)
-		foodTagList = append(foodTagList, foodTag)
+	for _, tagRepo := range result.GetRecords().([]model.FoodTag) {
+		tag := new(food_tag_domain.FoodTag)
+		_ = copier.Copy(&tag, &tagRepo)
+		foodTagList = append(foodTagList, tag)
 	}
 	resp.Items = foodTagList
 	resp.Current = int(result.GetCurrent())
@@ -73,27 +58,27 @@ func (f foodTagServiceImpl) List(size int64, page int64) (*food_tag_domain.ListR
 	return resp, nil
 }
 
-func (f foodTagServiceImpl) Detail(id string) (*food_tag_domain.FoodTag, error) {
-	foodRepoList := make([]*model.FoodTag, 0)
+func (f foodTagServiceImpl) Detail(id int64) (*food_tag_domain.FoodTag, error) {
+	tagDaoList := make([]*model.FoodTag, 0)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
-	err := foodTagMgr.Where("id=?", id).Limit(1).Find(&foodRepoList).Error
+	err := foodTagMgr.Where("id=?", id).Limit(1).Find(&tagDaoList).Error
 	if err != nil {
 		return nil, err
 	}
-	food := new(food_tag_domain.FoodTag)
-	_ = copier.Copy(&food, foodRepoList[0])
-	return food, nil
+	tag := new(food_tag_domain.FoodTag)
+	_ = copier.Copy(&tag, tagDaoList[0])
+	return tag, nil
 }
 
 func (f foodTagServiceImpl) Create(t *food_tag_domain.FoodTag) (string, error) {
 	foodTagDao := new(model.FoodTag)
 	_ = copier.Copy(foodTagDao, t)
-	foodTagDao.ID = foodTagDao.FoodID + "_" + foodTagDao.TagID
+	foodTagDao.ID = strings.Join(pinyin.LazyConvert(foodTagDao.Name, nil), "_")
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	err := foodTagMgr.Omit("create_time", "update_time").Create(foodTagDao).Error
 	if err != nil {
 		return "", err
 	}
-	log.Infof("create food success: %s", foodTagDao.ID)
+	log.Infof("create food_to_food_tag success: %s", foodTagDao.ID)
 	return foodTagDao.ID, nil
 }

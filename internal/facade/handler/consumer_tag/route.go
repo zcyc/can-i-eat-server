@@ -1,4 +1,4 @@
-package food_facade
+package consumer_tag_facade
 
 import (
 	"fmt"
@@ -7,8 +7,6 @@ import (
 
 func RegisterHandlers(e *echo.Echo) {
 	e.GET(GetContextPathV1("/list"), handlerList)
-	e.GET(GetContextPathV1("/list-by-consumerTag"), handlerListByConsumerTag)
-	e.GET(GetContextPathV1("/list-by-consumer"), handlerListByConsumer)
 	e.GET(GetContextPathV1("/detail"), handlerDetail)
 	e.POST(GetContextPathV1("/create"), handlerCreate)
 	e.POST(GetContextPathV1("/update"), handlerUpdate)
@@ -16,5 +14,5 @@ func RegisterHandlers(e *echo.Echo) {
 }
 
 func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/food%s", action)
+	return fmt.Sprintf("/v1/consumer-food_tag%s", action)
 }
