@@ -5,6 +5,7 @@ import (
 	consumer_tag_facade "can-i-eat/internal/facade/handler/consumer_tag"
 	consumer_tag_to_food_tag_facade "can-i-eat/internal/facade/handler/consumer_tag_to_food_tag"
 	consumer_to_consumer_tag_facade "can-i-eat/internal/facade/handler/consumer_to_consumer_tag"
+	data_source_facade "can-i-eat/internal/facade/handler/data_source"
 	food_facade "can-i-eat/internal/facade/handler/food"
 	food_tag_facade "can-i-eat/internal/facade/handler/food_tag"
 	food_to_food_tag_facade "can-i-eat/internal/facade/handler/food_to_food_tag"
@@ -36,6 +37,7 @@ func initFacade(e *echo.Echo) {
 	consumer_tag_facade.RegisterHandlers(e)
 	consumer_to_consumer_tag_facade.RegisterHandlers(e)
 	consumer_tag_to_food_tag_facade.RegisterHandlers(e)
+	data_source_facade.RegisterHandlers(e)
 }
 
 // initInfrastructure 初始化基础设施

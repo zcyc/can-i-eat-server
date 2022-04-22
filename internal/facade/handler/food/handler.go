@@ -76,7 +76,8 @@ func handlerDelete(c echo.Context) error {
 }
 
 func handlerListByConsumerTag(c echo.Context) error {
-	list, err := consumer_tag_to_food_tag_application.Impl.ListFoodByConsumerTag(c)
+	consumerTagID := c.QueryParam("consumer-tag-id")
+	list, err := consumer_tag_to_food_tag_application.Impl.ListFoodByConsumerTag(consumerTagID)
 	if err != nil {
 		return nil
 	}
@@ -84,7 +85,8 @@ func handlerListByConsumerTag(c echo.Context) error {
 }
 
 func handlerListByConsumer(c echo.Context) error {
-	list, err := consumer_tag_to_food_tag_application.Impl.ListFoodByConsumer(c)
+	consumerID := c.QueryParam("consumer-id")
+	list, err := consumer_tag_to_food_tag_application.Impl.ListFoodByConsumer(consumerID)
 	if err != nil {
 		return nil
 	}

@@ -7,7 +7,6 @@ import (
 	food_service "can-i-eat/internal/service/food"
 	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
 	"errors"
-	"github.com/labstack/echo/v4"
 )
 
 var Impl ConsumerTagToFoodTagApplication = &consumerTagToFoodTagApplicationImpl{}
@@ -15,8 +14,8 @@ var Impl ConsumerTagToFoodTagApplication = &consumerTagToFoodTagApplicationImpl{
 type consumerTagToFoodTagApplicationImpl struct {
 }
 
-func (g consumerTagToFoodTagApplicationImpl) ListFoodByConsumerTag(c echo.Context) ([]*food_domain.Food, error) {
-	consumerTagID := c.QueryParam("consumer-tag-id")
+func (g consumerTagToFoodTagApplicationImpl) ListFoodByConsumerTag(consumerTagID string) ([]*food_domain.Food, error) {
+
 	if consumerTagID == "" {
 		return nil, errors.New("参数错误")
 	}
@@ -45,8 +44,7 @@ func (g consumerTagToFoodTagApplicationImpl) ListFoodByConsumerTag(c echo.Contex
 	return foodList, nil
 }
 
-func (g consumerTagToFoodTagApplicationImpl) ListFoodByConsumer(c echo.Context) ([]*food_domain.Food, error) {
-	consumerID := c.QueryParam("consumer-id")
+func (g consumerTagToFoodTagApplicationImpl) ListFoodByConsumer(consumerID string) ([]*food_domain.Food, error) {
 	consumerToConsumerTagList, err := consumer_to_consumer_tag_service.Impl.ListByConsumer(consumerID)
 	if err != nil {
 		return nil, err
