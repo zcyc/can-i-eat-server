@@ -7,11 +7,46 @@ import (
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
+	"github.com/mozillazg/go-pinyin"
+	"gorm.io/gorm/clause"
+	"strings"
 )
 
 var Impl ConsumerTagToFoodTagService = &consumerTagToFoodTagServiceImpl{}
 
 type consumerTagToFoodTagServiceImpl struct {
+}
+
+func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]string, foodToConsumerTagMap map[string][]string) error {
+	var consumerTagToFoodTagList []*model.ConsumerTagToFoodTag
+	for foodID, foodTagIDList := range foodToFoodTagMap {
+		for i := range foodTagIDList {
+			for i2 := range foodToConsumerTagMap[foodID] {
+				consumerTag := strings.Split(foodToConsumerTagMap[foodID][i2], "_")
+				consumerTagName := consumerTag[0]
+				eatMode := consumerTag[1]
+				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, nil), "_")
+				consumerTagToFoodTag := &model.ConsumerTagToFoodTag{
+					Active:        constant.Activated,
+					Flag:          constant.Normal,
+					ID:            foodTagIDList[i] + "_" + consumerTagID,
+					ConsumerTagID: consumerTagID,
+					FoodTagID:     foodTagIDList[i],
+					EatMode:       eatMode,
+				}
+				consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
+			}
+		}
+	}
+
+	// 执行批量
+	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
+	err := consumerTagToFoodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(&consumerTagToFoodTagList, 100).Error
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }
 
 func (f consumerTagToFoodTagServiceImpl) ListByConsumerTagIDs(ids []string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error) {

@@ -28,7 +28,7 @@ func (f foodTagServiceImpl) BatchCreate(t []*food_tag_domain.FoodTag) error {
 
 	// 执行批量
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
-	err := foodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&foodTagDaoList).Error
+	err := foodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(&foodTagDaoList, 100).Error
 	if err != nil {
 		log.Error(err)
 		return err

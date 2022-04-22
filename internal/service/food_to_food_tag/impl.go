@@ -36,7 +36,7 @@ func (f foodToFoodTagServiceImpl) Bind(FoodTagList []*food_tag_domain.FoodTag, f
 
 	// 执行批量
 	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
-	err := foodToFoodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&foodToFoodTagDaoList).Error
+	err := foodToFoodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(&foodToFoodTagDaoList, 100).Error
 	if err != nil {
 		log.Error(err)
 		return err

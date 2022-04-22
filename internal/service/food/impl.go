@@ -28,7 +28,7 @@ func (f foodServiceImpl) BatchCreate(t []*food_domain.Food) error {
 
 	// 执行批量
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
-	err := foodMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&foodDaoList).Error
+	err := foodMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(&foodDaoList, 100).Error
 	if err != nil {
 		log.Error(err)
 		return err

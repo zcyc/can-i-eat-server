@@ -28,7 +28,7 @@ func (f consumerTagServiceImpl) BatchCreate(t []*consumer_tag_domain.ConsumerTag
 
 	// 执行批量
 	consumerTagMgr := model.ConsumerTagMgr(mysql_infrastructure.Get())
-	err := consumerTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&consumerTagDaoList).Error
+	err := consumerTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).CreateInBatches(&consumerTagDaoList, 100).Error
 	if err != nil {
 		log.Error(err)
 		return err

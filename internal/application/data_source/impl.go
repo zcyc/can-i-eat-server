@@ -7,6 +7,7 @@ import (
 	food_domain "can-i-eat/internal/domain/food"
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
 	consumer_tag_service "can-i-eat/internal/service/consumer_tag"
+	consumer_tag_to_food_tag_service "can-i-eat/internal/service/consumer_tag_to_food_tag"
 	food_service "can-i-eat/internal/service/food"
 	food_tag_service "can-i-eat/internal/service/food_tag"
 	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
@@ -29,6 +30,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	foodToFoodTagMap := make(map[string][]string, 0)
 	foodTagList := make([]*food_tag_domain.FoodTag, 0)
 	consumerTagList := make([]*consumer_tag_domain.ConsumerTag, 0)
+	foodToConsumerTagMap := make(map[string][]string, 0)
 	for i := range bhList {
 		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, nil), "_")
 		foodList = append(foodList, &food_domain.Food{
@@ -39,6 +41,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 		})
 		for i2 := range bhList[i].TagList {
 			if strings.Contains(bhList[i].TagList[i2], "_") {
+				foodToConsumerTagMap[foodID] = append(foodToConsumerTagMap[foodID], bhList[i].TagList[i2])
 				consumerTagName := strings.Split(bhList[i].TagList[i2], "_")[0]
 				if isConsumerTagExist(consumerTagList, consumerTagName) == true {
 					continue
@@ -106,6 +109,13 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 		return err
 	}
 	log.Info("批量绑定食物和食物标签成功")
+
+	// 批量绑定食物标签和用户标签
+	err = consumer_tag_to_food_tag_service.Impl.Bind(foodToFoodTagMap, foodToConsumerTagMap)
+	if err != nil {
+		return err
+	}
+	log.Info("批量绑定食物标签和用户标签成功")
 
 	return nil
 }
