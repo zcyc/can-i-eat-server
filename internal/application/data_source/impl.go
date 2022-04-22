@@ -5,6 +5,7 @@ import (
 	consumer_tag_domain "can-i-eat/internal/domain/consumer_tag"
 	food_domain "can-i-eat/internal/domain/food"
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
+	food_service "can-i-eat/internal/service/food"
 	"github.com/mozillazg/go-pinyin"
 	"strings"
 )
@@ -52,5 +53,12 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 
 		}
 	}
+
+	// 批量导入食物
+	_, err := food_service.Impl.BatchCreate(foodList)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
