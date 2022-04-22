@@ -35,7 +35,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 					ID:   strings.Join(pinyin.LazyConvert(consumerTagName, nil), "_"),
 					Name: consumerTagName,
 				})
-			} else if strings.Contains(bhList[i].TagList[i2], "类") {
+			} else if strings.Contains(bhList[i].TagList[i2], "类") || strings.Contains(bhList[i].TagList[i2], "饮品") {
 				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], nil), "_")
 				foodToTagMap[foodID] = append(foodToTagMap[foodID], &food_tag_domain.FoodTag{
 					ID:       foodTagID,
