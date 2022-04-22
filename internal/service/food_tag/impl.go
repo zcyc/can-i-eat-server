@@ -8,12 +8,32 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 	"github.com/mozillazg/go-pinyin"
+	"gorm.io/gorm/clause"
 	"strings"
 )
 
 var Impl FoodTagService = &foodTagServiceImpl{}
 
 type foodTagServiceImpl struct {
+}
+
+func (f foodTagServiceImpl) BatchCreate(t []*food_tag_domain.FoodTag) error {
+	// domain 对象转 repo 对象
+	foodTagDaoList := make([]*model.FoodTag, 0)
+	for _, foodTag := range t {
+		foodTagDao := new(model.FoodTag)
+		_ = copier.Copy(foodTagDao, foodTag)
+		foodTagDaoList = append(foodTagDaoList, foodTagDao)
+	}
+
+	// 执行批量
+	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
+	err := foodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&foodTagDaoList).Error
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }
 
 func (f foodTagServiceImpl) Delete(foodTag *food_tag_domain.FoodTag) error {

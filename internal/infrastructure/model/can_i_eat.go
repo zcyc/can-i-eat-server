@@ -195,7 +195,7 @@ type FoodTag struct {
 
 // TableName get sql table name.获取数据库表名
 func (m *FoodTag) TableName() string {
-	return "food_to_food_tag"
+	return "food_tag"
 }
 
 // FoodTagColumns get sql column name.获取数据库列名

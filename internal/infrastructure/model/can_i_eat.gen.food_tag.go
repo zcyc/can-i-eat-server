@@ -17,12 +17,12 @@ func FoodTagMgr(db *gorm.DB) *_FoodTagMgr {
 		panic(fmt.Errorf("FoodTagMgr need init by db"))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	return &_FoodTagMgr{_BaseMgr: &_BaseMgr{DB: db.Table("food_to_food_tag"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
+	return &_FoodTagMgr{_BaseMgr: &_BaseMgr{DB: db.Table("food_tag"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
 // GetTableName get sql table name.获取数据库名字
 func (obj *_FoodTagMgr) GetTableName() string {
-	return "food_to_food_tag"
+	return "food_tag"
 }
 
 // Reset 重置gorm会话

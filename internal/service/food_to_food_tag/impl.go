@@ -2,16 +2,46 @@ package food_to_food_tag_service
 
 import (
 	"can-i-eat/common/constant"
+	food_tag_domain "can-i-eat/internal/domain/food_tag"
 	food_to_food_tag_domain "can-i-eat/internal/domain/food_to_food_tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
+	"gorm.io/gorm/clause"
 )
 
 var Impl FoodToFoodTagService = &foodToFoodTagServiceImpl{}
 
 type foodToFoodTagServiceImpl struct {
+}
+
+func (f foodToFoodTagServiceImpl) Bind(FoodTagList []*food_tag_domain.FoodTag, foodToFoodTagMap map[string][]string) error {
+	foodToFoodTagDaoList := make([]*model.FoodToFoodTag, 0)
+	for _, foodTag := range FoodTagList {
+		for foodID, FoodTagIDList := range foodToFoodTagMap {
+			for i := range FoodTagIDList {
+				if foodTag.ID == FoodTagIDList[i] {
+					foodToFoodTagDao := new(model.FoodToFoodTag)
+					foodToFoodTagDao.Active = constant.Activated
+					foodToFoodTagDao.Flag = constant.Normal
+					foodToFoodTagDao.ID = foodID + "_" + FoodTagIDList[i]
+					foodToFoodTagDao.FoodTagID = FoodTagIDList[i]
+					foodToFoodTagDao.FoodID = foodID
+					foodToFoodTagDaoList = append(foodToFoodTagDaoList, foodToFoodTagDao)
+				}
+			}
+		}
+	}
+
+	// 执行批量
+	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
+	err := foodToFoodTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&foodToFoodTagDaoList).Error
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }
 
 func (f foodToFoodTagServiceImpl) ListByTagList(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error) {
