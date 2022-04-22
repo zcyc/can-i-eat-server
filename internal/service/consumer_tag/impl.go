@@ -8,12 +8,32 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/labstack/gommon/log"
 	"github.com/mozillazg/go-pinyin"
+	"gorm.io/gorm/clause"
 	"strings"
 )
 
 var Impl ConsumerTagService = &consumerTagServiceImpl{}
 
 type consumerTagServiceImpl struct {
+}
+
+func (f consumerTagServiceImpl) BatchCreate(t []*consumer_tag_domain.ConsumerTag) error {
+	// domain 对象转 repo 对象
+	consumerTagDaoList := make([]*model.ConsumerTag, 0)
+	for _, consumerTag := range t {
+		consumerTagDao := new(model.ConsumerTag)
+		_ = copier.Copy(consumerTagDao, consumerTag)
+		consumerTagDaoList = append(consumerTagDaoList, consumerTagDao)
+	}
+
+	// 执行批量
+	consumerTagMgr := model.ConsumerTagMgr(mysql_infrastructure.Get())
+	err := consumerTagMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&consumerTagDaoList).Error
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	return nil
 }
 
 func (f consumerTagServiceImpl) ListByIDs(id []int64) ([]*consumer_tag_domain.ConsumerTag, error) {

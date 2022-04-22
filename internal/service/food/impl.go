@@ -17,7 +17,7 @@ var Impl FoodService = &foodServiceImpl{}
 type foodServiceImpl struct {
 }
 
-func (f foodServiceImpl) BatchCreate(t []*food_domain.Food) (string, error) {
+func (f foodServiceImpl) BatchCreate(t []*food_domain.Food) error {
 	// domain 对象转 repo 对象
 	foodDaoList := make([]*model.Food, 0)
 	for _, food := range t {
@@ -31,9 +31,9 @@ func (f foodServiceImpl) BatchCreate(t []*food_domain.Food) (string, error) {
 	err := foodMgr.Omit("create_time", "update_time").Clauses(clause.OnConflict{DoNothing: true}).Create(&foodDaoList).Error
 	if err != nil {
 		log.Error(err)
-		return "", err
+		return err
 	}
-	return "", nil
+	return nil
 }
 
 func (f foodServiceImpl) ListByIDs(ids []string) ([]*food_domain.Food, error) {

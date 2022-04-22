@@ -5,6 +5,7 @@ import (
 	consumer_tag_domain "can-i-eat/internal/domain/consumer_tag"
 	food_domain "can-i-eat/internal/domain/food"
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
+	consumer_tag_service "can-i-eat/internal/service/consumer_tag"
 	food_service "can-i-eat/internal/service/food"
 	"github.com/mozillazg/go-pinyin"
 	"strings"
@@ -32,6 +33,9 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 		for i2 := range bhList[i].TagList {
 			if strings.Contains(bhList[i].TagList[i2], "_") {
 				consumerTagName := strings.Split(bhList[i].TagList[i2], "_")[0]
+				if isConsumerTagExist(consumerTagList, consumerTagName) == true {
+					continue
+				}
 				consumerTagList = append(consumerTagList, &consumer_tag_domain.ConsumerTag{
 					ID:   strings.Join(pinyin.LazyConvert(consumerTagName, nil), "_"),
 					Name: consumerTagName,
@@ -55,10 +59,25 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	}
 
 	// 批量导入食物
-	_, err := food_service.Impl.BatchCreate(foodList)
+	err := food_service.Impl.BatchCreate(foodList)
+	if err != nil {
+		return err
+	}
+
+	// 批量用户卡片
+	err = consumer_tag_service.Impl.BatchCreate(consumerTagList)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func isConsumerTagExist(consumerTagList []*consumer_tag_domain.ConsumerTag, tagName string) bool {
+	for i := range consumerTagList {
+		if consumerTagList[i].Name == tagName {
+			return true
+		}
+	}
+	return false
 }
