@@ -47,7 +47,7 @@ func (f foodToFoodTagServiceImpl) Bind(FoodTagList []*food_tag_domain.FoodTag, f
 func (f foodToFoodTagServiceImpl) ListByTagList(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error) {
 	foodToFoodTagDaoList := make([]*model.FoodToFoodTag, 0)
 	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
-	err := foodToFoodTagMgr.Where("tag_id in ?", ids).Find(&foodToFoodTagDaoList).Error
+	err := foodToFoodTagMgr.Where("food_tag_id in ?", ids).Find(&foodToFoodTagDaoList).Error
 	if err != nil {
 		return nil, err
 	}
