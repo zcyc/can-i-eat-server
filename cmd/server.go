@@ -12,6 +12,7 @@ import (
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	redis_infrastructure "can-i-eat/internal/infrastructure/redis"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -30,6 +31,10 @@ func main() {
 
 // initFacade 初始化路由
 func initFacade(e *echo.Echo) {
+	// 跨域中间件
+	e.Use(middleware.CORS())
+
+	// 注册路由
 	food_facade.RegisterHandlers(e)
 	food_tag_facade.RegisterHandlers(e)
 	food_to_food_tag_facade.RegisterHandlers(e)
