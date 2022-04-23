@@ -26,13 +26,20 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 		return nil
 	}
 
+	// 设置获取拼音的时候保留字母
+	a := pinyin.NewArgs()
+	a.Fallback = func(r rune, a pinyin.Args) []string {
+		return []string{string(r)}
+	}
+
+	// 开始处理数据
 	foodList := make([]*food_domain.Food, 0)
 	foodToFoodTagMap := make(map[string][]string, 0)
 	foodTagList := make([]*food_tag_domain.FoodTag, 0)
 	consumerTagList := make([]*consumer_tag_domain.ConsumerTag, 0)
 	foodToConsumerTagMap := make(map[string][]string, 0)
 	for i := range bhList {
-		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, nil), "_")
+		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, &a), "_")
 		foodList = append(foodList, &food_domain.Food{
 			Active: constant.Activated,
 			Flag:   constant.Normal,
@@ -49,11 +56,11 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 				consumerTagList = append(consumerTagList, &consumer_tag_domain.ConsumerTag{
 					Active: constant.Activated,
 					Flag:   constant.Normal,
-					ID:     strings.Join(pinyin.LazyConvert(consumerTagName, nil), "_"),
+					ID:     strings.Join(pinyin.LazyConvert(consumerTagName, &a), "_"),
 					Name:   consumerTagName,
 				})
 			} else if strings.Contains(bhList[i].TagList[i2], "类") || strings.Contains(bhList[i].TagList[i2], "饮品") {
-				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], nil), "_")
+				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], &a), "_")
 				foodTag := &food_tag_domain.FoodTag{
 					Active:   constant.Activated,
 					Flag:     constant.Normal,
@@ -67,7 +74,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 				}
 				foodTagList = append(foodTagList, foodTag)
 			} else {
-				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], nil), "_")
+				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], &a), "_")
 				foodTag := &food_tag_domain.FoodTag{
 					Active: constant.Activated,
 					Flag:   constant.Normal,

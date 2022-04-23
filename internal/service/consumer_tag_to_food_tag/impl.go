@@ -18,21 +18,26 @@ type consumerTagToFoodTagServiceImpl struct {
 }
 
 func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]string, foodToConsumerTagMap map[string][]string) error {
+	// 设置获取拼音的时候保留字母
+	a := pinyin.NewArgs()
+	a.Fallback = func(r rune, a pinyin.Args) []string {
+		return []string{string(r)}
+	}
+
 	var consumerTagToFoodTagList []*model.ConsumerTagToFoodTag
 	for foodID, foodTagIDList := range foodToFoodTagMap {
 		for i := range foodTagIDList {
 			for i2 := range foodToConsumerTagMap[foodID] {
 				consumerTag := strings.Split(foodToConsumerTagMap[foodID][i2], "_")
 				consumerTagName := consumerTag[0]
-				eatMode := consumerTag[1]
-				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, nil), "_")
+				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, &a), "_")
 				consumerTagToFoodTag := &model.ConsumerTagToFoodTag{
 					Active:        constant.Activated,
 					Flag:          constant.Normal,
 					ID:            foodTagIDList[i] + "_" + consumerTagID,
 					ConsumerTagID: consumerTagID,
 					FoodTagID:     foodTagIDList[i],
-					EatMode:       eatMode,
+					EatMode:       strings.Join(pinyin.LazyConvert(consumerTag[1], &a), "_"),
 				}
 				consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
 			}
