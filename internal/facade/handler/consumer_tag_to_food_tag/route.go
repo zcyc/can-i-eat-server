@@ -8,7 +8,8 @@ import (
 func RegisterHandlers(e *echo.Echo) {
 	e.GET(GetContextPathV1("/list"), handlerList)
 	e.GET(GetContextPathV1("/detail"), handlerDetail)
-	e.GET(GetContextPathV1("/listByConsumerTagID"), handlerListByConsumerTagID)
+	e.GET(GetContextPathV1("/listByConsumerTag"), handlerListByConsumerTag)
+	e.GET(GetContextPathV1("/listByConsumerTagAndEatMode"), handlerListByConsumerTagAndEatMode)
 	e.POST(GetContextPathV1("/create"), handlerCreate)
 	e.POST(GetContextPathV1("/update"), handlerUpdate)
 	e.POST(GetContextPathV1("/delete"), handlerDelete)

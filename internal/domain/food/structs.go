@@ -24,4 +24,5 @@ type Food struct {
 
 type ListByFoodTagListReq struct {
 	FoodTagIdList []string `json:"foodTagIdList"`
+	EatMode       string   `json:"eatMode"`
 }
