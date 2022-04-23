@@ -6,9 +6,9 @@ import (
 )
 
 func RegisterHandlers(e *echo.Echo) {
-	e.POST(GetContextPathV1("/upload/bh"), handlerUploadBh)
+	e.POST(GetContextPathV1("upload/bh"), handlerUploadBh)
 }
 
 func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/dataSource%s", action)
+	return fmt.Sprintf("/v1/dataSource/%s", action)
 }
