@@ -69,7 +69,7 @@ func (f consumerTagToFoodTagServiceImpl) ListByConsumerTagIDs(ids []string) ([]*
 func (f consumerTagToFoodTagServiceImpl) ListByConsumerTag(id string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error) {
 	consumerTagToFoodTagDaoList := make([]*model.ConsumerTagToFoodTag, 0)
 	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
-	err := consumerTagToFoodTagMgr.Where("consumerTag_id = ?", id).Find(&consumerTagToFoodTagDaoList).Error
+	err := consumerTagToFoodTagMgr.Where("consumer_tag_id = ?", id).Find(&consumerTagToFoodTagDaoList).Error
 	if err != nil {
 		return nil, err
 	}

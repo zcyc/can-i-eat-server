@@ -147,6 +147,38 @@ var ConsumerToConsumerTagColumns = struct {
 	ConsumerTagID: "consumer_tag_id",
 }
 
+// EatMode [...]
+type EatMode struct {
+	Active     int8      `gorm:"column:active" json:"active"`
+	Flag       int8      `gorm:"column:flag" json:"flag"`
+	CreateTime time.Time `gorm:"column:create_time" json:"createTime"`
+	UpdateTime time.Time `gorm:"column:update_time" json:"updateTime"`
+	ID         string    `gorm:"primaryKey;column:id" json:"id"` // 主键
+	Name       string    `gorm:"column:name" json:"name"`
+}
+
+// TableName get sql table name.获取数据库表名
+func (m *EatMode) TableName() string {
+	return "eat_mode"
+}
+
+// EatModeColumns get sql column name.获取数据库列名
+var EatModeColumns = struct {
+	Active     string
+	Flag       string
+	CreateTime string
+	UpdateTime string
+	ID         string
+	Name       string
+}{
+	Active:     "active",
+	Flag:       "flag",
+	CreateTime: "create_time",
+	UpdateTime: "update_time",
+	ID:         "id",
+	Name:       "name",
+}
+
 // Food [...]
 type Food struct {
 	Active     int8      `gorm:"column:active" json:"active"`

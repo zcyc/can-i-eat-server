@@ -6,6 +6,7 @@ import (
 	consumer_tag_to_food_tag_service "can-i-eat/internal/service/consumer_tag_to_food_tag"
 	"errors"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 	"net/http"
 )
 
@@ -74,8 +75,9 @@ func handlerDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, "更新成功")
 }
 
-func handlerListByConsumerTag(c echo.Context) error {
-	consumerTagId := c.QueryParam("consumerTag_id")
+func handlerListByConsumerTagID(c echo.Context) error {
+	consumerTagId := c.QueryParam("consumerTagId")
+	log.Info(consumerTagId)
 	if consumerTagId == "" {
 		return errors.New("参数错误")
 	}
