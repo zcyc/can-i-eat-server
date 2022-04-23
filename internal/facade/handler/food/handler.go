@@ -8,7 +8,6 @@ import (
 	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
 	"errors"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"net/http"
 )
 
@@ -91,7 +90,6 @@ func handlerListByFoodTagList(c echo.Context) error {
 	if err := c.Bind(foodTagIdList); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	log.Info()
 
 	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagList(foodTagIdList.FoodTagIdList)
 	if err != nil {

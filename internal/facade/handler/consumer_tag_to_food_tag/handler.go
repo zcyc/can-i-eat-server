@@ -91,6 +91,7 @@ func handlerListByConsumerTag(c echo.Context) error {
 func handlerListByConsumerTagAndEatMode(c echo.Context) error {
 	consumerTagId := c.QueryParam("consumerTagId")
 	currentEatModeId := c.QueryParam("currentEatModeId")
+	log.Infof("handlerListByConsumerTagAndEatMode consumerTagId: %s, currentEatModeId: %s", consumerTagId, currentEatModeId)
 	if consumerTagId == "" || currentEatModeId == "" {
 		return errors.New("参数错误")
 	}
