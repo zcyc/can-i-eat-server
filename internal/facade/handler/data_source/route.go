@@ -10,5 +10,5 @@ func RegisterHandlers(e *echo.Echo) {
 }
 
 func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/data-source%s", action)
+	return fmt.Sprintf("/v1/dataSource%s", action)
 }

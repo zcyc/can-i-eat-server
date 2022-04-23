@@ -7,8 +7,8 @@ import (
 
 func RegisterHandlers(e *echo.Echo) {
 	e.GET(GetContextPathV1("/list"), handlerList)
-	e.GET(GetContextPathV1("/list-by-consumerTag"), handlerListByConsumerTag)
-	e.GET(GetContextPathV1("/list-by-consumer"), handlerListByConsumer)
+	e.GET(GetContextPathV1("/listByConsumerTag"), handlerListByConsumerTag)
+	e.GET(GetContextPathV1("/listByConsumer"), handlerListByConsumer)
 	e.GET(GetContextPathV1("/detail"), handlerDetail)
 	e.POST(GetContextPathV1("/create"), handlerCreate)
 	e.POST(GetContextPathV1("/update"), handlerUpdate)

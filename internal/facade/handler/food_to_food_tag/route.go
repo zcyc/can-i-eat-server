@@ -14,5 +14,5 @@ func RegisterHandlers(e *echo.Echo) {
 }
 
 func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/food-to-food-food_tag%s", action)
+	return fmt.Sprintf("/v1/foodToFoodTag%s", action)
 }
