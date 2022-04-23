@@ -29,6 +29,141 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	// 设置获取拼音的时候保留字母
 	a := pinyin.NewArgs()
 	a.Fallback = func(r rune, a pinyin.Args) []string {
+		if r == '(' {
+			return nil
+		}
+		if r == ')' {
+			return nil
+		}
+		if r == '（' {
+			return nil
+		}
+		if r == '）' {
+			return nil
+		}
+		if r == ' ' {
+			return nil
+		}
+		if r == ',' {
+			return nil
+		}
+		if r == '，' {
+			return nil
+		}
+		if r == '，' {
+			return nil
+		}
+		if r == '【' {
+			return nil
+		}
+		if r == '】' {
+			return nil
+		}
+		if r == '[' {
+			return nil
+		}
+		if r == ']' {
+			return nil
+		}
+		if r == '{' {
+			return nil
+		}
+		if r == '}' {
+			return nil
+		}
+		if r == '"' {
+			return nil
+		}
+		if r == '「' {
+			return nil
+		}
+		if r == '」' {
+			return nil
+		}
+		if r == '\\' {
+			return nil
+		}
+		if r == '、' {
+			return nil
+		}
+		if r == '。' {
+			return nil
+		}
+		if r == '/' {
+			return nil
+		}
+		if r == '？' {
+			return nil
+		}
+		if r == '《' {
+			return nil
+		}
+		if r == '》' {
+			return nil
+		}
+		if r == '<' {
+			return nil
+		}
+		if r == '>' {
+			return nil
+		}
+		if r == '.' {
+			return nil
+		}
+		if r == '`' {
+			return nil
+		}
+		if r == '~' {
+			return nil
+		}
+		if r == '·' {
+			return nil
+		}
+		if r == '！' {
+			return nil
+		}
+		if r == '!' {
+			return nil
+		}
+		if r == '@' {
+			return nil
+		}
+		if r == '#' {
+			return nil
+		}
+		if r == '¥' {
+			return nil
+		}
+		if r == '$' {
+			return nil
+		}
+		if r == '%' {
+			return nil
+		}
+		if r == '^' {
+			return nil
+		}
+		if r == '&' {
+			return nil
+		}
+		if r == '*' {
+			return nil
+		}
+		if r == '-' {
+			return nil
+		}
+		if r == '=' {
+			return nil
+		}
+		if r == '+' {
+			return nil
+		}
+		if r == '—' {
+			return nil
+		}
+		if r == '…' {
+			return nil
+		}
 		return []string{string(r)}
 	}
 
@@ -74,6 +209,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 				}
 				foodTagList = append(foodTagList, foodTag)
 			} else {
+
 				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], &a), "_")
 				foodTag := &food_tag_domain.FoodTag{
 					Active: constant.Activated,
@@ -95,6 +231,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	if err != nil {
 		return err
 	}
+	log.Info("批量导入食物成功")
 
 	// 批量导入用户标签
 	err = consumer_tag_service.Impl.BatchCreate(consumerTagList)
@@ -143,4 +280,14 @@ func isFoodTagExist(consumerTagList []*food_tag_domain.FoodTag, tagName string) 
 		}
 	}
 	return false
+}
+
+func trimStringArr(arr []string) []string {
+	var newArr []string
+	for i := range arr {
+		if arr[i] != "" {
+			newArr = append(newArr, arr[i])
+		}
+	}
+	return newArr
 }

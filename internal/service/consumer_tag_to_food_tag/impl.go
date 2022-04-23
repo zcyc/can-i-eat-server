@@ -21,6 +21,141 @@ func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]stri
 	// 设置获取拼音的时候保留字母
 	a := pinyin.NewArgs()
 	a.Fallback = func(r rune, a pinyin.Args) []string {
+		if r == '(' {
+			return nil
+		}
+		if r == ')' {
+			return nil
+		}
+		if r == '（' {
+			return nil
+		}
+		if r == '）' {
+			return nil
+		}
+		if r == ' ' {
+			return nil
+		}
+		if r == ',' {
+			return nil
+		}
+		if r == '，' {
+			return nil
+		}
+		if r == '，' {
+			return nil
+		}
+		if r == '【' {
+			return nil
+		}
+		if r == '】' {
+			return nil
+		}
+		if r == '[' {
+			return nil
+		}
+		if r == ']' {
+			return nil
+		}
+		if r == '{' {
+			return nil
+		}
+		if r == '}' {
+			return nil
+		}
+		if r == '"' {
+			return nil
+		}
+		if r == '「' {
+			return nil
+		}
+		if r == '」' {
+			return nil
+		}
+		if r == '\\' {
+			return nil
+		}
+		if r == '、' {
+			return nil
+		}
+		if r == '。' {
+			return nil
+		}
+		if r == '/' {
+			return nil
+		}
+		if r == '？' {
+			return nil
+		}
+		if r == '《' {
+			return nil
+		}
+		if r == '》' {
+			return nil
+		}
+		if r == '<' {
+			return nil
+		}
+		if r == '>' {
+			return nil
+		}
+		if r == '.' {
+			return nil
+		}
+		if r == '`' {
+			return nil
+		}
+		if r == '~' {
+			return nil
+		}
+		if r == '·' {
+			return nil
+		}
+		if r == '！' {
+			return nil
+		}
+		if r == '!' {
+			return nil
+		}
+		if r == '@' {
+			return nil
+		}
+		if r == '#' {
+			return nil
+		}
+		if r == '¥' {
+			return nil
+		}
+		if r == '$' {
+			return nil
+		}
+		if r == '%' {
+			return nil
+		}
+		if r == '^' {
+			return nil
+		}
+		if r == '&' {
+			return nil
+		}
+		if r == '*' {
+			return nil
+		}
+		if r == '-' {
+			return nil
+		}
+		if r == '=' {
+			return nil
+		}
+		if r == '+' {
+			return nil
+		}
+		if r == '—' {
+			return nil
+		}
+		if r == '…' {
+			return nil
+		}
 		return []string{string(r)}
 	}
 
