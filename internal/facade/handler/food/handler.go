@@ -139,6 +139,7 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 	// 如果是推荐食用需要过滤一下谨慎食用的标签
 	foodTagList, err := food_to_food_tag_service.Impl.ListByFoodIDs(foodIDs)
 
+	// 取出食品标签id
 	foodTagIDs := make([]string, 0)
 	for i := range foodTagList {
 		if utils.Contains(foodTagIDs, foodTagList[i].FoodTagID) {
@@ -147,11 +148,13 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 		foodTagIDs = append(foodTagIDs, foodTagList[i].FoodTagID)
 	}
 
+	// 获取当前用户标签禁止食用的食品标签
 	consumerTagToFoodTagList, err := consumer_tag_to_food_tag_service.Impl.ListByFoodTagIDsAndConsumerTagIDAndEatMode(foodTagIDs, req.ConsumerTagId, constant.EatModeWarning)
 	if err != nil {
 		return err
 	}
 
+	// 当前用户标签禁止食用的食品标签 ids
 	warningFoodTagIDs := make([]string, 0)
 	for _, consumerTagToFoodTag := range consumerTagToFoodTagList {
 		if utils.Contains(warningFoodTagIDs, consumerTagToFoodTag.FoodTagID) {
@@ -160,8 +163,10 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 		warningFoodTagIDs = append(warningFoodTagIDs, consumerTagToFoodTag.FoodTagID)
 	}
 
+	// 整理食物到禁止食用的标签的关系
 	foodToFoodTagListMap := make(map[string][]string, 0)
 	for _, foodTag := range foodTagList {
+		// 判断是否在禁止食用标签中
 		if utils.Contains(warningFoodTagIDs, foodTag.FoodTagID) {
 			if utils.Contains(foodToFoodTagListMap[foodTag.FoodID], foodTag.FoodTagID) {
 				continue
@@ -170,6 +175,7 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 		}
 	}
 
+	// 整理禁止食用的食物
 	warningFoodID := make([]string, 0)
 	for foodID, foodTags := range foodToFoodTagListMap {
 		if len(foodTags) == 0 {
@@ -178,6 +184,7 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 		warningFoodID = append(warningFoodID, foodID)
 	}
 
+	// 删除禁止食用的食物
 	res := removeWarningFood(foodList, warningFoodID)
 
 	return c.JSON(http.StatusOK, res)
