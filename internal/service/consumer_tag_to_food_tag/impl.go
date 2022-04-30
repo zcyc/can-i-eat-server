@@ -21,18 +21,18 @@ type consumerTagToFoodTagServiceImpl struct {
 func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]string, foodToConsumerTagMap map[string][]string) error {
 	var consumerTagToFoodTagList []*model.ConsumerTagToFoodTag
 	for foodID, foodTagIDList := range foodToFoodTagMap {
-		for i := range foodTagIDList {
-			for i2 := range foodToConsumerTagMap[foodID] {
-				consumerTag := strings.Split(foodToConsumerTagMap[foodID][i2], "_")
-				consumerTagName := consumerTag[0]
+		for _, foodTagID := range foodTagIDList {
+			for _, consumerTag := range foodToConsumerTagMap[foodID] {
+				consumerTagArr := strings.Split(consumerTag, "_")
+				consumerTagName := consumerTagArr[0]
 				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, util.PinYinArgs()), "_")
 				consumerTagToFoodTag := &model.ConsumerTagToFoodTag{
 					Active:        constant.DataActivated,
 					Flag:          constant.DataNormal,
-					ID:            foodTagIDList[i] + "_" + consumerTagID,
+					ID:            foodTagID + "_" + consumerTagID,
 					ConsumerTagID: consumerTagID,
-					FoodTagID:     foodTagIDList[i],
-					EatMode:       strings.Join(pinyin.LazyConvert(consumerTag[1], util.PinYinArgs()), "_"),
+					FoodTagID:     foodTagID,
+					EatMode:       strings.Join(pinyin.LazyConvert(consumerTagArr[1], util.PinYinArgs()), "_"),
 				}
 				consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
 			}
