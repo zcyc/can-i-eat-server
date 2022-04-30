@@ -29,9 +29,15 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 
 	// 开始处理数据
 	foodList := make([]*food_domain.Food, 0)
+	// 食物到食物标签的映射
 	foodToFoodTagMap := make(map[string][]string, 0)
+	// 食物到食物标签的映射，映射的标签不包含分类
+	foodToFoodTagNoCategoryMap := make(map[string][]string, 0)
+	// 食物标签列表
 	foodTagList := make([]*food_tag_domain.FoodTag, 0)
+	// 用户标签列表
 	consumerTagList := make([]*consumer_tag_domain.ConsumerTag, 0)
+	// 食物到用户标签的映射
 	foodToConsumerTagMap := make(map[string][]string, 0)
 	for i := range bhList {
 		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, util.PinYinArgs()), "_")
@@ -61,7 +67,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 					Flag:     constant.DataNormal,
 					ID:       foodTagID,
 					Name:     bhList[i].TagList[i2],
-					ParentID: "fenlei",
+					ParentID: "fen_lei",
 				}
 				foodToFoodTagMap[foodID] = append(foodToFoodTagMap[foodID], foodTagID)
 				if isFoodTagExist(foodTagList, bhList[i].TagList[i2]) == true {
@@ -69,7 +75,6 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 				}
 				foodTagList = append(foodTagList, foodTag)
 			} else {
-
 				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], util.PinYinArgs()), "_")
 				foodTag := &food_tag_domain.FoodTag{
 					Active: constant.DataActivated,
@@ -78,6 +83,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 					Name:   bhList[i].TagList[i2],
 				}
 				foodToFoodTagMap[foodID] = append(foodToFoodTagMap[foodID], foodTagID)
+				foodToFoodTagNoCategoryMap[foodID] = append(foodToFoodTagNoCategoryMap[foodID], foodTagID)
 				if isFoodTagExist(foodTagList, bhList[i].TagList[i2]) == true {
 					continue
 				}
@@ -115,7 +121,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	log.Info("批量绑定食物和食物标签成功")
 
 	// 批量绑定食物标签和用户标签
-	err = consumer_tag_to_food_tag_service.Impl.Bind(foodToFoodTagMap, foodToConsumerTagMap)
+	err = consumer_tag_to_food_tag_service.Impl.Bind(foodToFoodTagNoCategoryMap, foodToConsumerTagMap)
 	if err != nil {
 		return err
 	}
