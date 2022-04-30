@@ -7,6 +7,7 @@ import (
 
 func RegisterHandlers(e *echo.Echo) {
 	e.GET(GetContextPathV1("list"), handlerList)
+	e.POST(GetContextPathV1("listByFoodTagList"), handlerListByFoodTagList)
 	e.GET(GetContextPathV1("detail"), handlerDetail)
 	e.POST(GetContextPathV1("create"), handlerCreate)
 	e.POST(GetContextPathV1("update"), handlerUpdate)

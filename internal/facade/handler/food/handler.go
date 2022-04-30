@@ -4,6 +4,7 @@ import (
 	string_util "can-i-eat/common/util/string"
 	food_domain "can-i-eat/internal/domain/food"
 	food_service "can-i-eat/internal/service/food"
+	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -82,4 +83,30 @@ func isInList(list []string, str string) bool {
 		}
 	}
 	return false
+}
+
+func handlerListByFoodTagList(c echo.Context) error {
+	foodTagIdList := new(food_domain.ListByFoodTagListReq)
+	if err := c.Bind(foodTagIdList); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagList(foodTagIdList.FoodTagIdList)
+	if err != nil {
+		return nil
+	}
+
+	var foodIDList []string
+	for i := range foodToFoodTagLit {
+		if !isInList(foodIDList, foodToFoodTagLit[i].FoodID) {
+			foodIDList = append(foodIDList, foodToFoodTagLit[i].FoodID)
+		}
+	}
+
+	foodList, err := food_service.Impl.ListByIDs(foodIDList)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, foodList)
 }
