@@ -2,6 +2,7 @@ package data_source_application
 
 import (
 	"can-i-eat/common/constant"
+	util "can-i-eat/common/util/pinyin"
 	common_domain "can-i-eat/internal/domain/common"
 	consumer_tag_domain "can-i-eat/internal/domain/consumer_tag"
 	food_domain "can-i-eat/internal/domain/food"
@@ -26,222 +27,6 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 		return nil
 	}
 
-	// 设置获取拼音的时候保留字母
-	a := pinyin.NewArgs()
-	a.Fallback = func(r rune, a pinyin.Args) []string {
-		if r == '(' {
-			return nil
-		}
-		if r == ')' {
-			return nil
-		}
-		if r == '（' {
-			return nil
-		}
-		if r == '）' {
-			return nil
-		}
-		if r == ' ' {
-			return nil
-		}
-		if r == ',' {
-			return nil
-		}
-		if r == '，' {
-			return nil
-		}
-		if r == '，' {
-			return nil
-		}
-		if r == '【' {
-			return nil
-		}
-		if r == '】' {
-			return nil
-		}
-		if r == '[' {
-			return nil
-		}
-		if r == ']' {
-			return nil
-		}
-		if r == '{' {
-			return nil
-		}
-		if r == '}' {
-			return nil
-		}
-		if r == '"' {
-			return nil
-		}
-		if r == '「' {
-			return nil
-		}
-		if r == '」' {
-			return nil
-		}
-		if r == '\\' {
-			return nil
-		}
-		if r == '、' {
-			return nil
-		}
-		if r == '。' {
-			return nil
-		}
-		if r == '/' {
-			return nil
-		}
-		if r == '？' {
-			return nil
-		}
-		if r == '《' {
-			return nil
-		}
-		if r == '》' {
-			return nil
-		}
-		if r == '<' {
-			return nil
-		}
-		if r == '>' {
-			return nil
-		}
-		if r == '.' {
-			return nil
-		}
-		if r == '`' {
-			return nil
-		}
-		if r == '~' {
-			return nil
-		}
-		if r == '·' {
-			return nil
-		}
-		if r == '！' {
-			return nil
-		}
-		if r == '!' {
-			return nil
-		}
-		if r == '@' {
-			return nil
-		}
-		if r == '#' {
-			return nil
-		}
-		if r == '¥' {
-			return nil
-		}
-		if r == '$' {
-			return nil
-		}
-		if r == '%' {
-			return nil
-		}
-		if r == '^' {
-			return nil
-		}
-		if r == '&' {
-			return nil
-		}
-		if r == '*' {
-			return nil
-		}
-		if r == '-' {
-			return nil
-		}
-		if r == '=' {
-			return nil
-		}
-		if r == '+' {
-			return nil
-		}
-		if r == '—' {
-			return nil
-		}
-		if r == '…' {
-			return nil
-		}
-		if r == 'α' {
-			return []string{"alpha"}
-		}
-		if r == 'β' {
-			return []string{"beta"}
-		}
-		if r == 'γ' {
-			return []string{"gamma"}
-		}
-		if r == 'δ' {
-			return []string{"delta"}
-		}
-		if r == 'ε' {
-			return []string{"epsilon"}
-		}
-		if r == 'ζ' {
-			return []string{"zeta"}
-		}
-		if r == 'η' {
-			return []string{"eta"}
-		}
-		if r == 'θ' {
-			return []string{"theta"}
-		}
-		if r == 'ι' {
-			return []string{"iota"}
-		}
-		if r == 'κ' {
-			return []string{"kappa"}
-		}
-		if r == 'λ' {
-			return []string{"lambda"}
-		}
-		if r == 'μ' {
-			return []string{"mu"}
-		}
-		if r == 'ν' {
-			return []string{"nu"}
-		}
-		if r == 'ξ' {
-			return []string{"xi"}
-		}
-		if r == 'ο' {
-			return []string{"omicron"}
-		}
-		if r == 'π' {
-			return []string{"pi"}
-		}
-		if r == 'ρ' {
-			return []string{"rho"}
-		}
-		if r == 'σ' {
-			return []string{"sigma"}
-		}
-		if r == 'ς' {
-			return []string{"sigma"}
-		}
-		if r == 'τ' {
-			return []string{"tau"}
-		}
-		if r == 'υ' {
-			return []string{"upsilon"}
-		}
-		if r == 'φ' {
-			return []string{"phi"}
-		}
-		if r == 'χ' {
-			return []string{"chi"}
-		}
-		if r == 'ψ' {
-			return []string{"psi"}
-		}
-		if r == 'ω' {
-			return []string{"omega"}
-		}
-		return []string{string(r)}
-	}
-
 	// 开始处理数据
 	foodList := make([]*food_domain.Food, 0)
 	foodToFoodTagMap := make(map[string][]string, 0)
@@ -249,7 +34,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	consumerTagList := make([]*consumer_tag_domain.ConsumerTag, 0)
 	foodToConsumerTagMap := make(map[string][]string, 0)
 	for i := range bhList {
-		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, &a), "_")
+		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, util.PinYinArgs()), "_")
 		foodList = append(foodList, &food_domain.Food{
 			Active: constant.Activated,
 			Flag:   constant.Normal,
@@ -266,11 +51,11 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 				consumerTagList = append(consumerTagList, &consumer_tag_domain.ConsumerTag{
 					Active: constant.Activated,
 					Flag:   constant.Normal,
-					ID:     strings.Join(pinyin.LazyConvert(consumerTagName, &a), "_"),
+					ID:     strings.Join(pinyin.LazyConvert(consumerTagName, util.PinYinArgs()), "_"),
 					Name:   consumerTagName,
 				})
 			} else if strings.Contains(bhList[i].TagList[i2], "类") || strings.Contains(bhList[i].TagList[i2], "饮品") {
-				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], &a), "_")
+				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], util.PinYinArgs()), "_")
 				foodTag := &food_tag_domain.FoodTag{
 					Active:   constant.Activated,
 					Flag:     constant.Normal,
@@ -285,7 +70,7 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 				foodTagList = append(foodTagList, foodTag)
 			} else {
 
-				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], &a), "_")
+				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], util.PinYinArgs()), "_")
 				foodTag := &food_tag_domain.FoodTag{
 					Active: constant.Activated,
 					Flag:   constant.Normal,

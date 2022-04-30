@@ -2,6 +2,7 @@ package consumer_tag_to_food_tag_service
 
 import (
 	"can-i-eat/common/constant"
+	util "can-i-eat/common/util/pinyin"
 	consumer_tag_to_food_tag_domain "can-i-eat/internal/domain/consumer_tag_to_food_tag"
 	"can-i-eat/internal/infrastructure/model"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
@@ -18,236 +19,20 @@ type consumerTagToFoodTagServiceImpl struct {
 }
 
 func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]string, foodToConsumerTagMap map[string][]string) error {
-	// 设置获取拼音的时候保留字母
-	a := pinyin.NewArgs()
-	a.Fallback = func(r rune, a pinyin.Args) []string {
-		if r == '(' {
-			return nil
-		}
-		if r == ')' {
-			return nil
-		}
-		if r == '（' {
-			return nil
-		}
-		if r == '）' {
-			return nil
-		}
-		if r == ' ' {
-			return nil
-		}
-		if r == ',' {
-			return nil
-		}
-		if r == '，' {
-			return nil
-		}
-		if r == '，' {
-			return nil
-		}
-		if r == '【' {
-			return nil
-		}
-		if r == '】' {
-			return nil
-		}
-		if r == '[' {
-			return nil
-		}
-		if r == ']' {
-			return nil
-		}
-		if r == '{' {
-			return nil
-		}
-		if r == '}' {
-			return nil
-		}
-		if r == '"' {
-			return nil
-		}
-		if r == '「' {
-			return nil
-		}
-		if r == '」' {
-			return nil
-		}
-		if r == '\\' {
-			return nil
-		}
-		if r == '、' {
-			return nil
-		}
-		if r == '。' {
-			return nil
-		}
-		if r == '/' {
-			return nil
-		}
-		if r == '？' {
-			return nil
-		}
-		if r == '《' {
-			return nil
-		}
-		if r == '》' {
-			return nil
-		}
-		if r == '<' {
-			return nil
-		}
-		if r == '>' {
-			return nil
-		}
-		if r == '.' {
-			return nil
-		}
-		if r == '`' {
-			return nil
-		}
-		if r == '~' {
-			return nil
-		}
-		if r == '·' {
-			return nil
-		}
-		if r == '！' {
-			return nil
-		}
-		if r == '!' {
-			return nil
-		}
-		if r == '@' {
-			return nil
-		}
-		if r == '#' {
-			return nil
-		}
-		if r == '¥' {
-			return nil
-		}
-		if r == '$' {
-			return nil
-		}
-		if r == '%' {
-			return nil
-		}
-		if r == '^' {
-			return nil
-		}
-		if r == '&' {
-			return nil
-		}
-		if r == '*' {
-			return nil
-		}
-		if r == '-' {
-			return nil
-		}
-		if r == '=' {
-			return nil
-		}
-		if r == '+' {
-			return nil
-		}
-		if r == '—' {
-			return nil
-		}
-		if r == '…' {
-			return nil
-		}
-		if r == 'α' {
-			return []string{"alpha"}
-		}
-		if r == 'β' {
-			return []string{"beta"}
-		}
-		if r == 'γ' {
-			return []string{"gamma"}
-		}
-		if r == 'δ' {
-			return []string{"delta"}
-		}
-		if r == 'ε' {
-			return []string{"epsilon"}
-		}
-		if r == 'ζ' {
-			return []string{"zeta"}
-		}
-		if r == 'η' {
-			return []string{"eta"}
-		}
-		if r == 'θ' {
-			return []string{"theta"}
-		}
-		if r == 'ι' {
-			return []string{"iota"}
-		}
-		if r == 'κ' {
-			return []string{"kappa"}
-		}
-		if r == 'λ' {
-			return []string{"lambda"}
-		}
-		if r == 'μ' {
-			return []string{"mu"}
-		}
-		if r == 'ν' {
-			return []string{"nu"}
-		}
-		if r == 'ξ' {
-			return []string{"xi"}
-		}
-		if r == 'ο' {
-			return []string{"omicron"}
-		}
-		if r == 'π' {
-			return []string{"pi"}
-		}
-		if r == 'ρ' {
-			return []string{"rho"}
-		}
-		if r == 'σ' {
-			return []string{"sigma"}
-		}
-		if r == 'ς' {
-			return []string{"sigma"}
-		}
-		if r == 'τ' {
-			return []string{"tau"}
-		}
-		if r == 'υ' {
-			return []string{"upsilon"}
-		}
-		if r == 'φ' {
-			return []string{"phi"}
-		}
-		if r == 'χ' {
-			return []string{"chi"}
-		}
-		if r == 'ψ' {
-			return []string{"psi"}
-		}
-		if r == 'ω' {
-			return []string{"omega"}
-		}
-		return []string{string(r)}
-	}
-
 	var consumerTagToFoodTagList []*model.ConsumerTagToFoodTag
 	for foodID, foodTagIDList := range foodToFoodTagMap {
 		for i := range foodTagIDList {
 			for i2 := range foodToConsumerTagMap[foodID] {
 				consumerTag := strings.Split(foodToConsumerTagMap[foodID][i2], "_")
 				consumerTagName := consumerTag[0]
-				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, &a), "_")
+				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, util.PinYinArgs()), "_")
 				consumerTagToFoodTag := &model.ConsumerTagToFoodTag{
 					Active:        constant.Activated,
 					Flag:          constant.Normal,
 					ID:            foodTagIDList[i] + "_" + consumerTagID,
 					ConsumerTagID: consumerTagID,
 					FoodTagID:     foodTagIDList[i],
-					EatMode:       strings.Join(pinyin.LazyConvert(consumerTag[1], &a), "_"),
+					EatMode:       strings.Join(pinyin.LazyConvert(consumerTag[1], util.PinYinArgs()), "_"),
 				}
 				consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
 			}
