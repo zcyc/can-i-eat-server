@@ -75,19 +75,6 @@ func handlerDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, "更新成功")
 }
 
-func handlerListByConsumerTag(c echo.Context) error {
-	consumerTagId := c.QueryParam("consumerTagId")
-	log.Info(consumerTagId)
-	if consumerTagId == "" {
-		return errors.New("参数错误")
-	}
-	resp, err := consumer_tag_to_food_tag_service.Impl.ListByConsumerTag(consumerTagId)
-	if err != nil {
-		return err
-	}
-	return c.JSON(http.StatusOK, resp)
-}
-
 func handlerListByConsumerTagAndEatMode(c echo.Context) error {
 	consumerTagId := c.QueryParam("consumerTagId")
 	currentEatModeId := c.QueryParam("currentEatModeId")

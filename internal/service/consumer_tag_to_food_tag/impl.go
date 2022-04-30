@@ -49,40 +49,6 @@ func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]stri
 	return nil
 }
 
-func (f consumerTagToFoodTagServiceImpl) ListByConsumerTagIDs(ids []string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error) {
-	consumerTagToFoodTagDaoList := make([]*model.ConsumerTagToFoodTag, 0)
-	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
-	err := consumerTagToFoodTagMgr.Where("consumerTag_id in ?", ids).Find(&consumerTagToFoodTagDaoList).Error
-	if err != nil {
-		return nil, err
-	}
-	consumerTagToFoodTagList := make([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, 0)
-	for _, consumerTagToFoodTagRepo := range consumerTagToFoodTagDaoList {
-		consumerTagToFoodTag := new(consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag)
-		_ = copier.Copy(&consumerTagToFoodTag, &consumerTagToFoodTagRepo)
-		consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
-	}
-
-	return consumerTagToFoodTagList, nil
-}
-
-func (f consumerTagToFoodTagServiceImpl) ListByConsumerTag(id string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error) {
-	consumerTagToFoodTagDaoList := make([]*model.ConsumerTagToFoodTag, 0)
-	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
-	err := consumerTagToFoodTagMgr.Where("consumer_tag_id = ?", id).Find(&consumerTagToFoodTagDaoList).Error
-	if err != nil {
-		return nil, err
-	}
-	consumerTagToFoodTagList := make([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, 0)
-	for _, consumerTagToFoodTagRepo := range consumerTagToFoodTagDaoList {
-		consumerTagToFoodTag := new(consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag)
-		_ = copier.Copy(&consumerTagToFoodTag, &consumerTagToFoodTagRepo)
-		consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
-	}
-
-	return consumerTagToFoodTagList, nil
-}
-
 func (f consumerTagToFoodTagServiceImpl) ListByConsumerTagAndEatMode(id string, eatMode string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error) {
 	consumerTagToFoodTagDaoList := make([]*model.ConsumerTagToFoodTag, 0)
 	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())

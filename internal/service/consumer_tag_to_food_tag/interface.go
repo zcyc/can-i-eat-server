@@ -11,7 +11,5 @@ type ConsumerTagToFoodTagService interface {
 	Bind(foodToFoodTagMap map[string][]string, foodToConsumerTagMap map[string][]string) error
 	Update(t *consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag) error
 	Delete(t *consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag) error
-	ListByConsumerTag(id string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error)
 	ListByConsumerTagAndEatMode(id string, eatMode string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error)
-	ListByConsumerTagIDs(ids []string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error)
 }
