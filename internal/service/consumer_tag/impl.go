@@ -54,7 +54,7 @@ func (f consumerTagServiceImpl) ListByIDs(id []int64) ([]*consumer_tag_domain.Co
 
 func (f consumerTagServiceImpl) Delete(consumerTag *consumer_tag_domain.ConsumerTag) error {
 	consumerTagMgr := model.ConsumerTagMgr(mysql_infrastructure.Get())
-	err := consumerTagMgr.Update("flag", constant.Deleted).Where("id=?", consumerTag.ID).Error
+	err := consumerTagMgr.Update("flag", constant.DataDeleted).Where("id=?", consumerTag.ID).Error
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (f consumerTagServiceImpl) List(size int64, page int64) (*consumer_tag_doma
 	resp := new(consumer_tag_domain.ListResp)
 	consumerTagMgr := model.ConsumerTagMgr(mysql_infrastructure.Get())
 	consumerTagPage := model.NewPage(size, page)
-	result, err := consumerTagMgr.SelectPage(consumerTagPage, consumerTagMgr.WithFlag(constant.Normal), consumerTagMgr.WithActive(constant.Activated))
+	result, err := consumerTagMgr.SelectPage(consumerTagPage, consumerTagMgr.WithFlag(constant.DataNormal), consumerTagMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

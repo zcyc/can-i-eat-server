@@ -55,7 +55,7 @@ func (f eatModeServiceImpl) ListByIDs(ids []string) ([]*eat_mode_domain.EatMode,
 
 func (f eatModeServiceImpl) Delete(eat_mode *eat_mode_domain.EatMode) error {
 	eatModeMgr := model.EatModeMgr(mysql_infrastructure.Get())
-	err := eatModeMgr.Update("flag", constant.Deleted).Where("id=?", eat_mode.ID).Error
+	err := eatModeMgr.Update("flag", constant.DataDeleted).Where("id=?", eat_mode.ID).Error
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (f eatModeServiceImpl) List(size int64, page int64) (*eat_mode_domain.ListR
 	resp := new(eat_mode_domain.ListResp)
 	eatModeMgr := model.EatModeMgr(mysql_infrastructure.Get())
 	eatModePage := model.NewPage(size, page)
-	result, err := eatModeMgr.SelectPage(eatModePage, eatModeMgr.WithFlag(constant.Normal), eatModeMgr.WithActive(constant.Activated))
+	result, err := eatModeMgr.SelectPage(eatModePage, eatModeMgr.WithFlag(constant.DataNormal), eatModeMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

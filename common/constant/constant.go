@@ -6,13 +6,21 @@ const (
 		0: 未删除
 		1: 已删除
 	*/
-	Normal  = 0
-	Deleted = 1
+	DataNormal  = 0
+	DataDeleted = 1
 	/*
 		上下架状态
 		0: 下架
 		1: 上架
 	*/
-	Inactivated = 0
-	Activated   = 1
+	DataInactivated = 0
+	DataActivated   = 1
+)
+
+const (
+	/*
+		用户标签和食品标签的关系
+	*/
+	Recommend = "tui_jian_shi_yong"
+	Warning   = "jin_shen_shi_yong"
 )

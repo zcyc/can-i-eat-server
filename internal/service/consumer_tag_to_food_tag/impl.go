@@ -27,8 +27,8 @@ func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]stri
 				consumerTagName := consumerTag[0]
 				consumerTagID := strings.Join(pinyin.LazyConvert(consumerTagName, util.PinYinArgs()), "_")
 				consumerTagToFoodTag := &model.ConsumerTagToFoodTag{
-					Active:        constant.Activated,
-					Flag:          constant.Normal,
+					Active:        constant.DataActivated,
+					Flag:          constant.DataNormal,
 					ID:            foodTagIDList[i] + "_" + consumerTagID,
 					ConsumerTagID: consumerTagID,
 					FoodTagID:     foodTagIDList[i],
@@ -102,7 +102,7 @@ func (f consumerTagToFoodTagServiceImpl) ListByConsumerTagAndEatMode(id string, 
 
 func (f consumerTagToFoodTagServiceImpl) Delete(consumerTagToFoodTag *consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag) error {
 	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
-	err := consumerTagToFoodTagMgr.Update("flag", constant.Deleted).Where("id=?", consumerTagToFoodTag.ID).Error
+	err := consumerTagToFoodTagMgr.Update("flag", constant.DataDeleted).Where("id=?", consumerTagToFoodTag.ID).Error
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func (f consumerTagToFoodTagServiceImpl) List(size int64, page int64) (*consumer
 	resp := new(consumer_tag_to_food_tag_domain.ListResp)
 	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
 	consumerTagPage := model.NewPage(size, page)
-	result, err := consumerTagToFoodTagMgr.SelectPage(consumerTagPage, consumerTagToFoodTagMgr.WithFlag(constant.Normal), consumerTagToFoodTagMgr.WithActive(constant.Activated))
+	result, err := consumerTagToFoodTagMgr.SelectPage(consumerTagPage, consumerTagToFoodTagMgr.WithFlag(constant.DataNormal), consumerTagToFoodTagMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

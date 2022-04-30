@@ -55,7 +55,7 @@ func (f foodServiceImpl) ListByIDs(ids []string) ([]*food_domain.Food, error) {
 
 func (f foodServiceImpl) Delete(food *food_domain.Food) error {
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
-	err := foodMgr.Update("flag", constant.Deleted).Where("id=?", food.ID).Error
+	err := foodMgr.Update("flag", constant.DataDeleted).Where("id=?", food.ID).Error
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (f foodServiceImpl) List(size int64, page int64) (*food_domain.ListResp, er
 	resp := new(food_domain.ListResp)
 	foodMgr := model.FoodMgr(mysql_infrastructure.Get())
 	foodPage := model.NewPage(size, page)
-	result, err := foodMgr.SelectPage(foodPage, foodMgr.WithFlag(constant.Normal), foodMgr.WithActive(constant.Activated))
+	result, err := foodMgr.SelectPage(foodPage, foodMgr.WithFlag(constant.DataNormal), foodMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

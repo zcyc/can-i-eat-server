@@ -1,8 +1,8 @@
 package data_source_facade
 
 import (
-	data_source_application "can-i-eat/internal/application/data_source"
 	common_domain "can-i-eat/internal/domain/common"
+	"can-i-eat/internal/service/data_source"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"

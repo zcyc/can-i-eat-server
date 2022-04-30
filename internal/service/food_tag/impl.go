@@ -38,7 +38,7 @@ func (f foodTagServiceImpl) BatchCreate(t []*food_tag_domain.FoodTag) error {
 
 func (f foodTagServiceImpl) Delete(foodTag *food_tag_domain.FoodTag) error {
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
-	err := foodTagMgr.Update("flag", constant.Deleted).Where("id=?", foodTag.ID).Error
+	err := foodTagMgr.Update("flag", constant.DataDeleted).Where("id=?", foodTag.ID).Error
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (f foodTagServiceImpl) List(size int64, page int64) (*food_tag_domain.ListR
 	resp := new(food_tag_domain.ListResp)
 	foodTagMgr := model.FoodTagMgr(mysql_infrastructure.Get())
 	foodTagPage := model.NewPage(size, page)
-	result, err := foodTagMgr.SelectPage(foodTagPage, foodTagMgr.WithFlag(constant.Normal), foodTagMgr.WithActive(constant.Activated))
+	result, err := foodTagMgr.SelectPage(foodTagPage, foodTagMgr.WithFlag(constant.DataNormal), foodTagMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

@@ -23,8 +23,8 @@ func (f foodToFoodTagServiceImpl) Bind(FoodTagList []*food_tag_domain.FoodTag, f
 			for i := range FoodTagIDList {
 				if foodTag.ID == FoodTagIDList[i] {
 					foodToFoodTagDao := new(model.FoodToFoodTag)
-					foodToFoodTagDao.Active = constant.Activated
-					foodToFoodTagDao.Flag = constant.Normal
+					foodToFoodTagDao.Active = constant.DataActivated
+					foodToFoodTagDao.Flag = constant.DataNormal
 					foodToFoodTagDao.ID = foodID + "_" + FoodTagIDList[i]
 					foodToFoodTagDao.FoodTagID = FoodTagIDList[i]
 					foodToFoodTagDao.FoodID = foodID
@@ -63,7 +63,7 @@ func (f foodToFoodTagServiceImpl) ListByTagList(ids []string) ([]*food_to_food_t
 
 func (f foodToFoodTagServiceImpl) Delete(foodToFoodTag *food_to_food_tag_domain.FoodToFoodTag) error {
 	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
-	err := foodToFoodTagMgr.Update("flag", constant.Deleted).Where("id=?", foodToFoodTag.ID).Error
+	err := foodToFoodTagMgr.Update("flag", constant.DataDeleted).Where("id=?", foodToFoodTag.ID).Error
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (f foodToFoodTagServiceImpl) List(size int64, page int64) (*food_to_food_ta
 	resp := new(food_to_food_tag_domain.ListResp)
 	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
 	foodToFoodTagPage := model.NewPage(size, page)
-	result, err := foodToFoodTagMgr.SelectPage(foodToFoodTagPage, foodToFoodTagMgr.WithFlag(constant.Normal), foodToFoodTagMgr.WithActive(constant.Activated))
+	result, err := foodToFoodTagMgr.SelectPage(foodToFoodTagPage, foodToFoodTagMgr.WithFlag(constant.DataNormal), foodToFoodTagMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

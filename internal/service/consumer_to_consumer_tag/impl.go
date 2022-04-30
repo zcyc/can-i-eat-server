@@ -33,7 +33,7 @@ func (f consumerToConsumerTagServiceImpl) ListByConsumer(id string) ([]*consumer
 
 func (f consumerToConsumerTagServiceImpl) Delete(consumerToConsumerTag *consumer_to_consumer_tag_domain.ConsumerToConsumerTag) error {
 	consumerToConsumerTagMgr := model.ConsumerToConsumerTagMgr(mysql_infrastructure.Get())
-	err := consumerToConsumerTagMgr.Update("flag", constant.Deleted).Where("id=?", consumerToConsumerTag.ID).Error
+	err := consumerToConsumerTagMgr.Update("flag", constant.DataDeleted).Where("id=?", consumerToConsumerTag.ID).Error
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (f consumerToConsumerTagServiceImpl) List(size int64, page int64) (*consume
 	resp := new(consumer_to_consumer_tag_domain.ListResp)
 	consumerToConsumerTagMgr := model.ConsumerToConsumerTagMgr(mysql_infrastructure.Get())
 	consumerToConsumerTagPage := model.NewPage(size, page)
-	result, err := consumerToConsumerTagMgr.SelectPage(consumerToConsumerTagPage, consumerToConsumerTagMgr.WithFlag(constant.Normal), consumerToConsumerTagMgr.WithActive(constant.Activated))
+	result, err := consumerToConsumerTagMgr.SelectPage(consumerToConsumerTagPage, consumerToConsumerTagMgr.WithFlag(constant.DataNormal), consumerToConsumerTagMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}

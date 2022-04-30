@@ -36,8 +36,8 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	for i := range bhList {
 		foodID := strings.Join(pinyin.LazyConvert(bhList[i].Name, util.PinYinArgs()), "_")
 		foodList = append(foodList, &food_domain.Food{
-			Active: constant.Activated,
-			Flag:   constant.Normal,
+			Active: constant.DataActivated,
+			Flag:   constant.DataNormal,
 			ID:     foodID,
 			Name:   bhList[i].Name,
 		})
@@ -49,16 +49,16 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 					continue
 				}
 				consumerTagList = append(consumerTagList, &consumer_tag_domain.ConsumerTag{
-					Active: constant.Activated,
-					Flag:   constant.Normal,
+					Active: constant.DataActivated,
+					Flag:   constant.DataNormal,
 					ID:     strings.Join(pinyin.LazyConvert(consumerTagName, util.PinYinArgs()), "_"),
 					Name:   consumerTagName,
 				})
 			} else if strings.Contains(bhList[i].TagList[i2], "类") || strings.Contains(bhList[i].TagList[i2], "饮品") {
 				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], util.PinYinArgs()), "_")
 				foodTag := &food_tag_domain.FoodTag{
-					Active:   constant.Activated,
-					Flag:     constant.Normal,
+					Active:   constant.DataActivated,
+					Flag:     constant.DataNormal,
 					ID:       foodTagID,
 					Name:     bhList[i].TagList[i2],
 					ParentID: "fenlei",
@@ -72,8 +72,8 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 
 				foodTagID := strings.Join(pinyin.LazyConvert(bhList[i].TagList[i2], util.PinYinArgs()), "_")
 				foodTag := &food_tag_domain.FoodTag{
-					Active: constant.Activated,
-					Flag:   constant.Normal,
+					Active: constant.DataActivated,
+					Flag:   constant.DataNormal,
 					ID:     foodTagID,
 					Name:   bhList[i].TagList[i2],
 				}

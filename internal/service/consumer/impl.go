@@ -17,7 +17,7 @@ type consumerServiceImpl struct {
 
 func (f consumerServiceImpl) Delete(consumer *consumer_domain.Consumer) error {
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
-	err := consumerMgr.Update("flag", constant.Deleted).Error
+	err := consumerMgr.Update("flag", constant.DataDeleted).Error
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func (f consumerServiceImpl) List(size int64, page int64) (*consumer_domain.List
 	resp := new(consumer_domain.ListResp)
 	consumerMgr := model.ConsumerMgr(mysql_infrastructure.Get())
 	consumerPage := model.NewPage(size, page)
-	result, err := consumerMgr.SelectPage(consumerPage, consumerMgr.WithFlag(constant.Normal), consumerMgr.WithActive(constant.Activated))
+	result, err := consumerMgr.SelectPage(consumerPage, consumerMgr.WithFlag(constant.DataNormal), consumerMgr.WithActive(constant.DataActivated))
 	if err != nil {
 		return nil, err
 	}
