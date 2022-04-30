@@ -16,6 +16,23 @@ var Impl FoodToFoodTagService = &foodToFoodTagServiceImpl{}
 type foodToFoodTagServiceImpl struct {
 }
 
+func (f foodToFoodTagServiceImpl) ListByFoodIDs(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error) {
+	foodToFoodTagDaoList := make([]*model.FoodToFoodTag, 0)
+	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
+	err := foodToFoodTagMgr.Where("food_id in ?", ids).Find(&foodToFoodTagDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	foodToFoodTagList := make([]*food_to_food_tag_domain.FoodToFoodTag, 0)
+	for _, foodToFoodTagRepo := range foodToFoodTagDaoList {
+		foodToFoodTag := new(food_to_food_tag_domain.FoodToFoodTag)
+		_ = copier.Copy(&foodToFoodTag, &foodToFoodTagRepo)
+		foodToFoodTagList = append(foodToFoodTagList, foodToFoodTag)
+	}
+
+	return foodToFoodTagList, nil
+}
+
 func (f foodToFoodTagServiceImpl) Bind(FoodTagList []*food_tag_domain.FoodTag, foodToFoodTagMap map[string][]string) error {
 	foodToFoodTagDaoList := make([]*model.FoodToFoodTag, 0)
 	for _, foodTag := range FoodTagList {
@@ -111,7 +128,7 @@ func (f foodToFoodTagServiceImpl) Create(t *food_to_food_tag_domain.FoodToFoodTa
 	return foodToFoodTagDao.ID, nil
 }
 
-func (f foodToFoodTagServiceImpl) ListByTagList(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error) {
+func (f foodToFoodTagServiceImpl) ListByTagIDs(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error) {
 	foodToFoodTagDaoList := make([]*model.FoodToFoodTag, 0)
 	foodToFoodTagMgr := model.FoodToFoodTagMgr(mysql_infrastructure.Get())
 	err := foodToFoodTagMgr.Where("food_tag_id in ?", ids).Find(&foodToFoodTagDaoList).Error

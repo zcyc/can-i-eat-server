@@ -12,4 +12,5 @@ type ConsumerTagToFoodTagService interface {
 	Update(t *consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag) error
 	Delete(t *consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag) error
 	ListByConsumerTagAndEatMode(id string, eatMode string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error)
+	ListByFoodTagIDsAndConsumerTagIDAndEatMode(ids []string, consumerTagID string, eatMode string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error)
 }

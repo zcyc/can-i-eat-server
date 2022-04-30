@@ -26,3 +26,9 @@ type ListByFoodTagListReq struct {
 	FoodTagIdList []string `json:"foodTagIdList"`
 	EatMode       string   `json:"eatMode"`
 }
+
+type ListByFoodTagListAndConsumerTagIdReq struct {
+	FoodTagIdList []string `json:"foodTagIdList"`
+	ConsumerTagId string   `json:"consumerTagId"`
+	EatMode       string   `json:"eatMode"`
+}

@@ -12,5 +12,6 @@ type FoodToFoodTagService interface {
 	Bind(t []*food_tag_domain.FoodTag, foodToFoodTagMap map[string][]string) error
 	Update(t *food_to_food_tag_domain.FoodToFoodTag) error
 	Delete(t *food_to_food_tag_domain.FoodToFoodTag) error
-	ListByTagList(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error)
+	ListByTagIDs(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error)
+	ListByFoodIDs(ids []string) ([]*food_to_food_tag_domain.FoodToFoodTag, error)
 }

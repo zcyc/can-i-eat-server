@@ -21,6 +21,6 @@ const (
 	/*
 		用户标签和食品标签的关系
 	*/
-	Recommend = "tui_jian_shi_yong"
-	Warning   = "jin_shen_shi_yong"
+	EatModeRecommend = "tui_jian_shi_yong"
+	EatModeWarning   = "jin_shen_shi_yong"
 )

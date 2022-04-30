@@ -1,12 +1,15 @@
 package food_facade
 
 import (
+	"can-i-eat/common/constant"
 	string_util "can-i-eat/common/util/string"
 	food_domain "can-i-eat/internal/domain/food"
+	consumer_tag_to_food_tag_service "can-i-eat/internal/service/consumer_tag_to_food_tag"
 	food_service "can-i-eat/internal/service/food"
 	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
 	"errors"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm/utils"
 	"net/http"
 )
 
@@ -75,32 +78,24 @@ func handlerDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, "更新成功")
 }
 
-// 判断 string 是不是在 []string 中
-func isInList(list []string, str string) bool {
-	for _, v := range list {
-		if v == str {
-			return true
-		}
-	}
-	return false
-}
-
 func handlerListByFoodTagList(c echo.Context) error {
 	foodTagIdList := new(food_domain.ListByFoodTagListReq)
 	if err := c.Bind(foodTagIdList); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagList(foodTagIdList.FoodTagIdList)
+	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagIDs(foodTagIdList.FoodTagIdList)
 	if err != nil {
 		return nil
 	}
 
 	var foodIDList []string
 	for i := range foodToFoodTagLit {
-		if !isInList(foodIDList, foodToFoodTagLit[i].FoodID) {
-			foodIDList = append(foodIDList, foodToFoodTagLit[i].FoodID)
+		if utils.Contains(foodIDList, foodToFoodTagLit[i].FoodID) {
+			continue
 		}
+		foodIDList = append(foodIDList, foodToFoodTagLit[i].FoodID)
+
 	}
 
 	foodList, err := food_service.Impl.ListByIDs(foodIDList)
@@ -109,4 +104,83 @@ func handlerListByFoodTagList(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, foodList)
+}
+
+func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
+	req := new(food_domain.ListByFoodTagListAndConsumerTagIdReq)
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagIDs(req.FoodTagIdList)
+	if err != nil {
+		return nil
+	}
+
+	var foodIDs []string
+	for i := range foodToFoodTagLit {
+		if utils.Contains(foodIDs, foodToFoodTagLit[i].FoodID) {
+			continue
+		}
+		foodIDs = append(foodIDs, foodToFoodTagLit[i].FoodID)
+
+	}
+
+	foodList, err := food_service.Impl.ListByIDs(foodIDs)
+	if err != nil {
+		return err
+	}
+
+	// 如果是谨慎食用直接返回
+	if req.EatMode == constant.EatModeWarning {
+		return c.JSON(http.StatusOK, foodList)
+	}
+
+	// 如果是推荐食用需要过滤一下谨慎食用的标签
+	foodTagList, err := food_to_food_tag_service.Impl.ListByFoodIDs(foodIDs)
+
+	foodTagIDs := make([]string, 0)
+	for i := range foodTagList {
+		if utils.Contains(foodTagIDs, foodTagList[i].FoodTagID) {
+			continue
+		}
+		foodTagIDs = append(foodTagIDs, foodTagList[i].FoodTagID)
+	}
+
+	consumerTagToFoodTagList, err := consumer_tag_to_food_tag_service.Impl.ListByFoodTagIDsAndConsumerTagIDAndEatMode(foodTagIDs, req.ConsumerTagId, constant.EatModeWarning)
+	if err != nil {
+		return err
+	}
+
+	warningFoodTagIDs := make([]string, 0)
+	for _, consumerTagToFoodTag := range consumerTagToFoodTagList {
+		if utils.Contains(warningFoodTagIDs, consumerTagToFoodTag.FoodTagID) {
+			continue
+		}
+		warningFoodTagIDs = append(warningFoodTagIDs, consumerTagToFoodTag.FoodTagID)
+	}
+
+	warningFoodID := make([]string, 0)
+	for _, foodTag := range foodTagList {
+		if utils.Contains(warningFoodID, foodTag.FoodID) {
+			continue
+		}
+		warningFoodID = append(warningFoodID, foodTag.FoodID)
+	}
+
+	res := removeWarningFood(foodList, warningFoodID)
+
+	return c.JSON(http.StatusOK, res)
+}
+
+// 从 foodList 中删除 id 在 warningFoodID 中的食物
+func removeWarningFood(foodList []*food_domain.Food, warningFoodID []string) []*food_domain.Food {
+	res := make([]*food_domain.Food, 0)
+	for i := range foodList {
+		if utils.Contains(warningFoodID, foodList[i].ID) {
+			continue
+		}
+		res = append(res, foodList[i])
+	}
+	return res
 }

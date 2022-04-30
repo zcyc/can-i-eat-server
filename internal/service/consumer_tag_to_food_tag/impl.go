@@ -18,6 +18,23 @@ var Impl ConsumerTagToFoodTagService = &consumerTagToFoodTagServiceImpl{}
 type consumerTagToFoodTagServiceImpl struct {
 }
 
+func (f consumerTagToFoodTagServiceImpl) ListByFoodTagIDsAndConsumerTagIDAndEatMode(ids []string, consumerTagID string, eatMode string) ([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, error) {
+	consumerTagToFoodTagDaoList := make([]*model.ConsumerTagToFoodTag, 0)
+	consumerTagToFoodTagMgr := model.ConsumerTagToFoodTagMgr(mysql_infrastructure.Get())
+	err := consumerTagToFoodTagMgr.Where("food_tag_id in ? and consumer_tag_id = ? and eat_mode = ?", ids, consumerTagID, eatMode).Find(&consumerTagToFoodTagDaoList).Error
+	if err != nil {
+		return nil, err
+	}
+	consumerTagToFoodTagList := make([]*consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag, 0)
+	for _, consumerTagToFoodTagRepo := range consumerTagToFoodTagDaoList {
+		consumerTagToFoodTag := new(consumer_tag_to_food_tag_domain.ConsumerTagToFoodTag)
+		_ = copier.Copy(&consumerTagToFoodTag, &consumerTagToFoodTagRepo)
+		consumerTagToFoodTagList = append(consumerTagToFoodTagList, consumerTagToFoodTag)
+	}
+
+	return consumerTagToFoodTagList, nil
+}
+
 func (f consumerTagToFoodTagServiceImpl) Bind(foodToFoodTagMap map[string][]string, foodToConsumerTagMap map[string][]string) error {
 	var consumerTagToFoodTagList []*model.ConsumerTagToFoodTag
 	for foodID, foodTagIDList := range foodToFoodTagMap {
