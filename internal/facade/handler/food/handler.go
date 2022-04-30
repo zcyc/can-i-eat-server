@@ -160,12 +160,22 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 		warningFoodTagIDs = append(warningFoodTagIDs, consumerTagToFoodTag.FoodTagID)
 	}
 
-	warningFoodID := make([]string, 0)
+	foodToFoodTagListMap := make(map[string][]string, 0)
 	for _, foodTag := range foodTagList {
-		if utils.Contains(warningFoodID, foodTag.FoodID) {
+		if utils.Contains(warningFoodTagIDs, foodTag.FoodTagID) {
+			if utils.Contains(foodToFoodTagListMap[foodTag.FoodID], foodTag.FoodTagID) {
+				continue
+			}
+			foodToFoodTagListMap[foodTag.FoodID] = append(foodToFoodTagListMap[foodTag.FoodID], foodTag.FoodTagID)
+		}
+	}
+
+	warningFoodID := make([]string, 0)
+	for foodID, foodTags := range foodToFoodTagListMap {
+		if len(foodTags) == 0 {
 			continue
 		}
-		warningFoodID = append(warningFoodID, foodTag.FoodID)
+		warningFoodID = append(warningFoodID, foodID)
 	}
 
 	res := removeWarningFood(foodList, warningFoodID)
