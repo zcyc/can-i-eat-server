@@ -1,18 +1,16 @@
 package eat_mode_facade
 
 import (
-	"fmt"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func RegisterHandlers(e *echo.Echo) {
-	e.GET(GetContextPathV1("list"), handlerList)
-	e.GET(GetContextPathV1("detail"), handlerDetail)
-	e.POST(GetContextPathV1("create"), handlerCreate)
-	e.POST(GetContextPathV1("update"), handlerUpdate)
-	e.POST(GetContextPathV1("delete"), handlerDelete)
-}
-
-func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/eatMode/%s", action)
+func RegisterHandlers(r *gin.Engine) {
+	eatModeGroup := r.Group("/v1/eatMode")
+	{
+		eatModeGroup.GET("list", handlerList)
+		eatModeGroup.GET("detail", handlerDetail)
+		eatModeGroup.POST("create", handlerCreate)
+		eatModeGroup.POST("update", handlerUpdate)
+		eatModeGroup.POST("delete", handlerDelete)
+	}
 }

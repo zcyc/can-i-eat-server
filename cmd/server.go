@@ -12,39 +12,44 @@ import (
 	food_to_food_tag_facade "can-i-eat/internal/facade/handler/food_to_food_tag"
 	mysql_infrastructure "can-i-eat/internal/infrastructure/mysql"
 	redis_infrastructure "can-i-eat/internal/infrastructure/redis"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/labstack/gommon/log"
+	"os"
 )
 
 func main() {
 	// 初始化 echo
-	e := echo.New()
+	r := gin.Default()
+	// 防跨域中间件
+	r.Use(cors.Default())
 
 	// 初始化路由
-	initFacade(e)
+	initFacade(r)
 
 	// 初始化基础设施
 	initInfrastructure()
 
 	// 启动 http 监听
-	e.Logger.Fatal(e.Start(":1323"))
+	err := r.Run()
+	if err != nil {
+		log.Info(err)
+		os.Exit(1)
+	}
 }
 
 // initFacade 初始化路由
-func initFacade(e *echo.Echo) {
-	// 跨域中间件
-	e.Use(middleware.CORS())
-
+func initFacade(r *gin.Engine) {
 	// 注册路由
-	food_facade.RegisterHandlers(e)
-	food_tag_facade.RegisterHandlers(e)
-	food_to_food_tag_facade.RegisterHandlers(e)
-	consumer_facade.RegisterHandlers(e)
-	consumer_tag_facade.RegisterHandlers(e)
-	consumer_to_consumer_tag_facade.RegisterHandlers(e)
-	consumer_tag_to_food_tag_facade.RegisterHandlers(e)
-	data_source_facade.RegisterHandlers(e)
-	eat_mode_facade.RegisterHandlers(e)
+	food_facade.RegisterHandlers(r)
+	food_tag_facade.RegisterHandlers(r)
+	food_to_food_tag_facade.RegisterHandlers(r)
+	consumer_facade.RegisterHandlers(r)
+	consumer_tag_facade.RegisterHandlers(r)
+	consumer_to_consumer_tag_facade.RegisterHandlers(r)
+	consumer_tag_to_food_tag_facade.RegisterHandlers(r)
+	data_source_facade.RegisterHandlers(r)
+	eat_mode_facade.RegisterHandlers(r)
 }
 
 // initInfrastructure 初始化基础设施

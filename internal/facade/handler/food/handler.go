@@ -7,86 +7,97 @@ import (
 	consumer_tag_to_food_tag_service "can-i-eat/internal/service/consumer_tag_to_food_tag"
 	food_service "can-i-eat/internal/service/food"
 	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
-	"errors"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/utils"
 	"net/http"
 )
 
-func handlerList(c echo.Context) error {
-	pageStr := c.QueryParam("page")
+func handlerList(c *gin.Context) {
+	pageStr := c.Query("page")
 	page, err := string_util.StringToInt64(pageStr)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
-	sizeStr := c.QueryParam("size")
+	sizeStr := c.Query("size")
 	size, err := string_util.StringToInt64(sizeStr)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	resp, err := food_service.Impl.List(size, page)
 	if err != nil {
-		return err
+		c.String(http.StatusOK, err.Error())
+		return
 	}
-	return c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, resp)
 }
 
-func handlerDetail(c echo.Context) error {
-	id := c.QueryParam("id")
+func handlerDetail(c *gin.Context) {
+	id := c.Query("id")
 	if id == "" {
-		return errors.New("参数错误")
+		c.String(http.StatusOK, "参数错误")
+		return
 	}
 	food, _ := food_service.Impl.Detail(id)
-	return c.JSON(http.StatusOK, food)
+	c.JSON(http.StatusOK, food)
 }
 
-func handlerCreate(c echo.Context) error {
+func handlerCreate(c *gin.Context) {
 	food := new(food_domain.Food)
 	if err := c.Bind(food); err != nil {
-		return err
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 	id, err := food_service.Impl.Create(food)
 	if err != nil {
-		return c.String(http.StatusOK, "创建失败")
+		c.String(http.StatusOK, "创建失败")
+		return
 	}
-	return c.JSON(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
 
-func handlerUpdate(c echo.Context) error {
+func handlerUpdate(c *gin.Context) {
 	food := new(food_domain.Food)
 	if err := c.Bind(food); err != nil {
-		return err
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 	err := food_service.Impl.Update(food)
 	if err != nil {
-		return c.String(http.StatusOK, "更新失败")
+		c.String(http.StatusOK, "更新失败")
+		return
 	}
-	return c.JSON(http.StatusOK, "更新成功")
+	c.JSON(http.StatusOK, "更新成功")
 }
 
-func handlerDelete(c echo.Context) error {
+func handlerDelete(c *gin.Context) {
 	food := new(food_domain.Food)
 	if err := c.Bind(food); err != nil {
-		return err
+		c.String(http.StatusOK, "更新失败")
+		return
 	}
 	err := food_service.Impl.Delete(food)
 	if err != nil {
-		return c.String(http.StatusOK, "更新失败")
+		c.String(http.StatusOK, "更新失败")
+		return
 	}
-	return c.JSON(http.StatusOK, "更新成功")
+	c.String(http.StatusOK, "更新成功")
 }
 
-func handlerListByFoodTagList(c echo.Context) error {
+func handlerListByFoodTagList(c *gin.Context) {
 	foodTagIdList := new(food_domain.ListByFoodTagListReq)
 	if err := c.Bind(foodTagIdList); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagIDs(foodTagIdList.FoodTagIdList)
 	if err != nil {
-		return nil
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 
 	var foodIDList []string
@@ -100,21 +111,24 @@ func handlerListByFoodTagList(c echo.Context) error {
 
 	foodList, err := food_service.Impl.ListByIDs(foodIDList)
 	if err != nil {
-		return err
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 
-	return c.JSON(http.StatusOK, foodList)
+	c.JSON(http.StatusOK, foodList)
 }
 
-func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
+func handlerListByFoodTagListAndConsumerTagId(c *gin.Context) {
 	req := new(food_domain.ListByFoodTagListAndConsumerTagIdReq)
 	if err := c.Bind(req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	foodToFoodTagLit, err := food_to_food_tag_service.Impl.ListByTagIDs(req.FoodTagIdList)
 	if err != nil {
-		return nil
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 
 	var foodIDs []string
@@ -128,12 +142,14 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 
 	foodList, err := food_service.Impl.ListByIDs(foodIDs)
 	if err != nil {
-		return err
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 
 	// 如果是谨慎食用直接返回
 	if req.EatMode == constant.EatModeWarning {
-		return c.JSON(http.StatusOK, foodList)
+		c.JSON(http.StatusOK, foodList)
+		return
 	}
 
 	// 如果是推荐食用需要过滤一下谨慎食用的标签
@@ -151,7 +167,8 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 	// 获取当前用户标签禁止食用的食品标签
 	consumerTagToFoodTagList, err := consumer_tag_to_food_tag_service.Impl.ListByFoodTagIDsAndConsumerTagIDAndEatMode(foodTagIDs, req.ConsumerTagId, constant.EatModeWarning)
 	if err != nil {
-		return err
+		c.String(http.StatusOK, err.Error())
+		return
 	}
 
 	// 当前用户标签禁止食用的食品标签 ids
@@ -187,7 +204,7 @@ func handlerListByFoodTagListAndConsumerTagId(c echo.Context) error {
 	// 删除禁止食用的食物
 	res := removeWarningFood(foodList, warningFoodID)
 
-	return c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, res)
 }
 
 // 从 foodList 中删除 id 在 warningFoodID 中的食物

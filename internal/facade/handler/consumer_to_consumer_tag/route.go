@@ -1,18 +1,16 @@
 package consumer_to_consumer_tag_facade
 
 import (
-	"fmt"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func RegisterHandlers(e *echo.Echo) {
-	e.GET(GetContextPathV1("list"), handlerList)
-	e.GET(GetContextPathV1("detail"), handlerDetail)
-	e.POST(GetContextPathV1("create"), handlerCreate)
-	e.POST(GetContextPathV1("update"), handlerUpdate)
-	e.POST(GetContextPathV1("delete"), handlerDelete)
-}
-
-func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/consumerToConsumerTag/%s", action)
+func RegisterHandlers(r *gin.Engine) {
+	consumerToConsumerTagGroup := r.Group("/v1/consumerToConsumerTag")
+	{
+		consumerToConsumerTagGroup.GET("/list", handlerList)
+		consumerToConsumerTagGroup.GET("/detail", handlerDetail)
+		consumerToConsumerTagGroup.POST("/create", handlerCreate)
+		consumerToConsumerTagGroup.POST("/update", handlerUpdate)
+		consumerToConsumerTagGroup.POST("/delete", handlerDelete)
+	}
 }

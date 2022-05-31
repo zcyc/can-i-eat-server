@@ -1,20 +1,18 @@
 package food_facade
 
 import (
-	"fmt"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func RegisterHandlers(e *echo.Echo) {
-	e.GET(GetContextPathV1("list"), handlerList)
-	e.POST(GetContextPathV1("listByFoodTagList"), handlerListByFoodTagList)
-	e.POST(GetContextPathV1("listByFoodTagListAndConsumerTagId"), handlerListByFoodTagListAndConsumerTagId)
-	e.GET(GetContextPathV1("detail"), handlerDetail)
-	e.POST(GetContextPathV1("create"), handlerCreate)
-	e.POST(GetContextPathV1("update"), handlerUpdate)
-	e.POST(GetContextPathV1("delete"), handlerDelete)
-}
-
-func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/food/%s", action)
+func RegisterHandlers(r *gin.Engine) {
+	foodGroup := r.Group("/v1/food")
+	{
+		foodGroup.GET("/list", handlerList)
+		foodGroup.POST("/listByFoodTagList", handlerListByFoodTagList)
+		foodGroup.POST("/listByFoodTagListAndConsumerTagId", handlerListByFoodTagListAndConsumerTagId)
+		foodGroup.GET("/detail", handlerDetail)
+		foodGroup.POST("/create", handlerCreate)
+		foodGroup.POST("/update", handlerUpdate)
+		foodGroup.POST("/delete", handlerDelete)
+	}
 }

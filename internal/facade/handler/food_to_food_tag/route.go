@@ -1,18 +1,16 @@
 package food_to_food_tag_facade
 
 import (
-	"fmt"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func RegisterHandlers(e *echo.Echo) {
-	e.GET(GetContextPathV1("list"), handlerList)
-	e.GET(GetContextPathV1("detail"), handlerDetail)
-	e.POST(GetContextPathV1("create"), handlerCreate)
-	e.POST(GetContextPathV1("update"), handlerUpdate)
-	e.POST(GetContextPathV1("delete"), handlerDelete)
-}
-
-func GetContextPathV1(action string) string {
-	return fmt.Sprintf("/v1/foodToFoodTag/%s", action)
+func RegisterHandlers(r *gin.Engine) {
+	foodToFoodTagGroup := r.Group("/v1/foodToFoodTag")
+	{
+		foodToFoodTagGroup.GET("/list", handlerList)
+		foodToFoodTagGroup.GET("/detail", handlerDetail)
+		foodToFoodTagGroup.POST("/create", handlerCreate)
+		foodToFoodTagGroup.POST("/update", handlerUpdate)
+		foodToFoodTagGroup.POST("/delete", handlerDelete)
+	}
 }

@@ -4,71 +4,81 @@ import (
 	string_util "can-i-eat/common/util/string"
 	food_domain "can-i-eat/internal/domain/food"
 	food_service "can-i-eat/internal/service/food"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func handlerList(c echo.Context) error {
-	pageStr := c.QueryParam("page")
+func handlerList(c *gin.Context) {
+	pageStr := c.Query("page")
 	page, err := string_util.StringToInt64(pageStr)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
-	sizeStr := c.QueryParam("size")
+	sizeStr := c.Query("size")
 	size, err := string_util.StringToInt64(sizeStr)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	resp, err := food_service.Impl.List(size, page)
 	if err != nil {
-		return err
+		c.String(http.StatusInternalServerError, err.Error())
+		return
 	}
-	return c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, resp)
 }
 
-func handlerDetail(c echo.Context) error {
-	id := c.QueryParam("id")
+func handlerDetail(c *gin.Context) {
+	id := c.Query("id")
 	if id == "" {
-		return c.JSON(http.StatusOK, "参数错误")
+		c.String(http.StatusOK, "参数错误")
+		return
 	}
 	food, _ := food_service.Impl.Detail(id)
-	return c.JSON(http.StatusOK, food)
+	c.JSON(http.StatusOK, food)
 }
 
-func handlerCreate(c echo.Context) error {
+func handlerCreate(c *gin.Context) {
 	food := new(food_domain.Food)
 	if err := c.Bind(food); err != nil {
-		return err
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 	id, err := food_service.Impl.Create(food)
 	if err != nil {
-		return c.String(http.StatusOK, "创建失败")
+		c.String(http.StatusOK, "创建失败")
+		return
 	}
-	return c.JSON(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
 
-func handlerUpdate(c echo.Context) error {
+func handlerUpdate(c *gin.Context) {
 	food := new(food_domain.Food)
 	if err := c.Bind(food); err != nil {
-		return err
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 	err := food_service.Impl.Update(food)
 	if err != nil {
-		return c.String(http.StatusOK, "更新失败")
+		c.String(http.StatusOK, "更新失败")
+		return
 	}
-	return c.JSON(http.StatusOK, "更新成功")
+	c.JSON(http.StatusOK, "更新成功")
 }
 
-func handlerDelete(c echo.Context) error {
+func handlerDelete(c *gin.Context) {
 	food := new(food_domain.Food)
 	if err := c.Bind(food); err != nil {
-		return err
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 	err := food_service.Impl.Delete(food)
 	if err != nil {
-		return c.String(http.StatusOK, "更新失败")
+		c.String(http.StatusOK, "更新失败")
+		return
 	}
-	return c.JSON(http.StatusOK, "更新成功")
+	c.JSON(http.StatusOK, "更新成功")
 }
