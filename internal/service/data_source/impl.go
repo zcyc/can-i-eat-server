@@ -8,7 +8,6 @@ import (
 	food_domain "can-i-eat/internal/domain/food"
 	food_tag_domain "can-i-eat/internal/domain/food_tag"
 	consumer_tag_service "can-i-eat/internal/service/consumer_tag"
-	consumer_tag_to_food_tag_service "can-i-eat/internal/service/consumer_tag_to_food_tag"
 	food_service "can-i-eat/internal/service/food"
 	food_tag_service "can-i-eat/internal/service/food_tag"
 	food_to_food_tag_service "can-i-eat/internal/service/food_to_food_tag"
@@ -121,11 +120,11 @@ func (d dataSourceApplicationImpl) UploadBhJson(bhList common_domain.BhList) err
 	log.Info("批量绑定食物和食物标签成功")
 
 	// 批量绑定食物标签和用户标签
-	err = consumer_tag_to_food_tag_service.Impl.Bind(foodToFoodTagNoCategoryMap, foodToConsumerTagMap)
-	if err != nil {
-		return err
-	}
-	log.Info("批量绑定食物标签和用户标签成功")
+	//err = consumer_tag_to_food_tag_service.Impl.Bind(foodToFoodTagNoCategoryMap, foodToConsumerTagMap)
+	//if err != nil {
+	//	return err
+	//}
+	//log.Info("批量绑定食物标签和用户标签成功")
 
 	return nil
 }
